@@ -222,13 +222,13 @@ export default function ActivityThree() {
               className="absolute inset-0 bg-[#0000FF]/90 backdrop-blur-md" onClick={() => setShowMindmap(false)} />
             
             <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }}
-              className="relative w-full max-w-5xl h-[85vh] bg-white rounded-[3rem] border-[6px] border-black shadow-[16px_16px_0px_0px_#FF00FF] z-10 flex flex-col overflow-hidden"
+              className="relative w-full max-w-6xl h-[90vh] bg-white rounded-[3rem] border-[6px] border-black shadow-[16px_16px_0px_0px_#FF00FF] z-10 flex flex-col overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header Modal */}
               <div className="flex-none bg-[#FFFF00] px-6 py-4 flex items-center justify-between border-b-[6px] border-black">
                 <h3 className="font-black text-2xl md:text-3xl text-black flex items-center gap-3 uppercase">
-                  <GitMerge className="w-8 h-8 text-[#FF0000]" /> SƠ ĐỒ TƯ DUY: LÀM SỮA CHUA
+                  <GitMerge className="w-8 h-8 text-[#FF0000]" /> SƠ ĐỒ TƯ DUY: BÍ KÍP LÀM SỮA CHUA
                 </h3>
                 <button onClick={() => setShowMindmap(false)} className="bg-white text-black p-2 rounded-full border-4 border-black hover:bg-gray-200">
                   <X className="w-6 h-6" />
@@ -236,67 +236,104 @@ export default function ActivityThree() {
               </div>
 
               {/* Mindmap Canvas */}
-              <div className="flex-1 overflow-auto p-4 md:p-8 bg-[#00E5FF] relative custom-scrollbar flex items-center justify-center">
+              <div className="flex-1 overflow-auto p-4 md:p-8 bg-[#00E5FF] relative custom-scrollbar flex items-start justify-start md:justify-center">
                 
-                {/* CSS Grid/Flex based Mindmap */}
-                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 min-w-max pb-8 pt-8">
+                <div className="flex flex-col md:flex-row items-center gap-8 min-w-max pb-16 pt-8 px-4 md:px-16">
                   
                   {/* CENTRAL NODE */}
-                  <div className="relative z-10 bg-[#FF0000] text-white p-6 rounded-[3rem] border-[6px] border-black shadow-[8px_8px_0px_0px_#000000] max-w-[250px] text-center">
-                    <h2 className="font-black text-3xl uppercase tracking-wider mb-2 drop-shadow-md">SỮA CHUA</h2>
-                    <p className="font-bold text-sm bg-black/20 py-1 px-3 rounded-full">Sản phẩm lên men</p>
-                  </div>
+                  <motion.div 
+                    animate={{ rotate: [-2, 2, -2] }} transition={{ repeat: Infinity, duration: 4 }}
+                    className="relative z-20 bg-[#FF0000] text-white rounded-full border-[8px] border-black shadow-[12px_12px_0px_0px_#000000] w-[220px] h-[220px] flex flex-col justify-center items-center text-center shrink-0"
+                  >
+                    <h2 className="font-black text-3xl uppercase tracking-wider mb-1 drop-shadow-md">SỮA CHUA</h2>
+                    <p className="font-bold text-sm bg-black py-1 px-3 rounded-full border-2 border-white">Sản phẩm lên men</p>
+                  </motion.div>
 
-                  {/* BRANCHES CONTAINER */}
-                  <div className="flex flex-col gap-8 md:gap-12 relative">
+                  {/* RIGHT BRANCHES CONTAINER */}
+                  <div className="flex flex-col gap-6 relative shrink-0">
                     
-                    {/* Connecting lines for desktop (hidden on mobile for simplicity) */}
-                    <div className="hidden md:block absolute top-1/2 left-[-4rem] w-[4rem] h-[6px] bg-black -translate-y-1/2 z-0"></div>
-                    <div className="hidden md:block absolute top-[15%] bottom-[15%] left-[-4rem] w-[6px] bg-black z-0"></div>
-                    <div className="hidden md:block absolute top-[15%] left-[-4rem] w-[4rem] h-[6px] bg-black z-0"></div>
-                    <div className="hidden md:block absolute bottom-[15%] left-[-4rem] w-[4rem] h-[6px] bg-black z-0"></div>
+                    {/* Main vertical spine */}
+                    <div className="hidden md:block absolute left-[-3rem] top-[10%] bottom-[10%] w-[8px] bg-black z-0"></div>
+                    {/* Horizontal connector from center to spine */}
+                    <div className="hidden md:block absolute left-[-6rem] top-1/2 w-[3rem] h-[8px] bg-black -translate-y-1/2 z-0"></div>
 
-                    {/* TOP BRANCH: Nguyên liệu */}
-                    <motion.div whileHover={{ scale: 1.05 }} className="relative z-10 flex items-center gap-4">
-                      <div className="hidden md:block w-8 h-[6px] bg-black"></div>
-                      <div className="bg-[#FFFF00] p-4 rounded-3xl border-4 border-black shadow-[6px_6px_0px_0px_#000000] w-[260px]">
-                        <h4 className="font-black text-xl text-black uppercase border-b-4 border-black pb-2 mb-2 flex items-center gap-2">
-                          🥛 NGUYÊN LIỆU
-                        </h4>
-                        <ul className="font-bold text-black text-sm space-y-2">
-                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FF00FF] rounded-full border-2 border-black" />Sữa bò tươi/đặc (Đường)</li>
-                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FF00FF] rounded-full border-2 border-black" />Sữa mồi (Vi khuẩn Lactic)</li>
-                        </ul>
+                    {/* BRANCH 1: NGUYÊN LIỆU */}
+                    <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
+                      <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
+                      <div className="bg-[#FFFF00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-black w-[200px] shrink-0 text-center">
+                        🥛 NGUYÊN LIỆU
+                      </div>
+                      <div className="flex flex-col gap-3 relative">
+                        <div className="hidden md:block absolute left-[-1rem] top-[20%] bottom-[20%] w-[4px] bg-black"></div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-yellow-100 transition-colors">Sữa tươi / Sữa đặc (Đường)</div>
+                        </div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-yellow-100 transition-colors">Sữa chua mồi (Vi khuẩn Lactic)</div>
+                        </div>
                       </div>
                     </motion.div>
 
-                    {/* MIDDLE BRANCH: Quá trình */}
-                    <motion.div whileHover={{ scale: 1.05 }} className="relative z-10 flex items-center gap-4">
-                      <div className="hidden md:block w-8 h-[6px] bg-black"></div>
-                      <div className="bg-[#FF00FF] p-4 rounded-3xl border-4 border-black shadow-[6px_6px_0px_0px_#000000] w-[260px] text-white">
-                        <h4 className="font-black text-xl uppercase border-b-4 border-white pb-2 mb-2 flex items-center gap-2">
-                          🔥 QUÁ TRÌNH Ủ
-                        </h4>
-                        <ul className="font-bold text-sm space-y-2">
-                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FFFF00] rounded-full border-2 border-black" />Nhiệt độ: 40-45°C (Ấm)</li>
-                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FFFF00] rounded-full border-2 border-black" />Thời gian: 6-8 tiếng</li>
-                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FFFF00] rounded-full border-2 border-black" />Tuyệt đối KHÔNG động đậy</li>
-                        </ul>
+                    {/* BRANCH 2: ĐIỀU KIỆN Ủ */}
+                    <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
+                      <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
+                      <div className="bg-[#FF00FF] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-white w-[200px] shrink-0 text-center">
+                        🔥 ĐIỀU KIỆN Ủ
+                      </div>
+                      <div className="flex flex-col gap-3 relative">
+                        <div className="hidden md:block absolute left-[-1rem] top-[15%] bottom-[15%] w-[4px] bg-black"></div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-fuchsia-100 transition-colors">Nhiệt độ ấm: 40°C - 45°C</div>
+                        </div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-fuchsia-100 transition-colors">Thời gian: 6 đến 8 tiếng</div>
+                        </div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-fuchsia-100 transition-colors">Tuyệt đối để yên, KHÔNG xê dịch</div>
+                        </div>
                       </div>
                     </motion.div>
 
-                    {/* BOTTOM BRANCH: Hiện tượng */}
-                    <motion.div whileHover={{ scale: 1.05 }} className="relative z-10 flex items-center gap-4">
-                      <div className="hidden md:block w-8 h-[6px] bg-black"></div>
-                      <div className="bg-[#00FF00] p-4 rounded-3xl border-4 border-black shadow-[6px_6px_0px_0px_#000000] w-[260px] text-black">
-                        <h4 className="font-black text-xl uppercase border-b-4 border-black pb-2 mb-2 flex items-center gap-2">
-                          🧪 KẾT QUẢ CỦA LÊN MEN
-                        </h4>
-                        <ul className="font-bold text-sm space-y-2">
-                          <li className="flex items-start gap-2 leading-tight"><div className="w-3 h-3 bg-[#0000FF] rounded-full border-2 border-black shrink-0 mt-0.5" />Vi khuẩn Lactic 'ăn' Đường sinh ra Axit</li>
-                          <li className="flex items-start gap-2 leading-tight"><div className="w-3 h-3 bg-[#0000FF] rounded-full border-2 border-black shrink-0 mt-0.5" />Axit làm Protein bị đông tụ (đặc lại)</li>
-                          <li className="flex items-start gap-2 leading-tight"><div className="w-3 h-3 bg-[#0000FF] rounded-full border-2 border-black shrink-0 mt-0.5" />Rất tốt cho hệ tiêu hóa (Lợi khuẩn)</li>
-                        </ul>
+                    {/* BRANCH 3: HIỆN TƯỢNG */}
+                    <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
+                      <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
+                      <div className="bg-[#00FF00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-black w-[200px] shrink-0 text-center">
+                        🧪 CƠ CHẾ
+                      </div>
+                      <div className="flex flex-col gap-3 relative">
+                        <div className="hidden md:block absolute left-[-1rem] top-[20%] bottom-[20%] w-[4px] bg-black"></div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-green-100 transition-colors">Lactic "ăn" đường ➡️ Axit Lactic</div>
+                        </div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-green-100 transition-colors">Protein bị chua ➡️ Sữa đông tụ (đặc)</div>
+                        </div>
+                      </div>
+                    </motion.div>
+
+                    {/* BRANCH 4: LỢI ÍCH */}
+                    <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
+                      <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
+                      <div className="bg-[#FF8C00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-white w-[200px] shrink-0 text-center">
+                        ⭐ LỢI ÍCH
+                      </div>
+                      <div className="flex flex-col gap-3 relative">
+                        <div className="hidden md:block absolute left-[-1rem] top-[20%] bottom-[20%] w-[4px] bg-black"></div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-orange-100 transition-colors">Vị chua ngọt thơm ngon</div>
+                        </div>
+                        <div className="flex items-center gap-2 relative">
+                          <div className="hidden md:block absolute left-[-1rem] w-[1rem] h-[4px] bg-black top-1/2 -translate-y-1/2"></div>
+                          <div className="bg-white px-4 py-2 border-2 border-black rounded-xl font-bold text-sm shadow-sm hover:bg-orange-100 transition-colors">Bổ sung "Lợi khuẩn" bảo vệ đường ruột</div>
+                        </div>
                       </div>
                     </motion.div>
 

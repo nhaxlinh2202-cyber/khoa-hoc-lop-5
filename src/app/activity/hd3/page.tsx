@@ -61,27 +61,18 @@ export default function ActivityThree() {
           <div className="px-4 py-1.5 rounded-full bg-[#00FF00] text-black font-black text-lg uppercase border-2 border-black">
             🦠 Chặng 3 
           </div>
-          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase hidden sm:block">
+          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
             SOI VI KHUẨN <span className="text-[#FF0000]">LACTIC!</span>
           </h2>
         </div>
-
-        {/* MINDMAP BUTTON */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowMindmap(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-[#FF00FF] text-white border-4 border-black rounded-xl font-black text-sm md:text-base uppercase shadow-[4px_4px_0px_0px_#000000] hover:bg-[#CC00CC]"
-        >
-          <Map className="w-5 h-5 text-[#FFFF00]" /> SƠ ĐỒ TƯ DUY
-        </motion.button>
       </div>
 
       {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0 pb-20">
         
-        {/* Left Column: 3D Viewer (40%) */}
-        <div className="w-full md:w-[40%] flex flex-col min-h-[300px]">
+        {/* Left Column: 3D Viewer & Mindmap Button (40%) */}
+        <div className="w-full md:w-[40%] flex flex-col gap-4 min-h-[300px]">
+          
           <div className="flex-1 bg-[#FFFF00] rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_#000000] p-4 flex flex-col relative">
             <div className="flex-none bg-black rounded-full px-4 py-2 flex justify-center items-center text-white mb-3 border-2 border-white">
               <span className="font-black text-lg uppercase flex items-center gap-2">
@@ -107,6 +98,17 @@ export default function ActivityThree() {
               </div>
             </div>
           </div>
+
+          {/* GIANT MINDMAP BUTTON */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowMindmap(true)}
+            className="flex-none w-full py-5 bg-[#FF00FF] text-white border-4 border-black rounded-3xl font-black text-xl lg:text-2xl uppercase shadow-[8px_8px_0px_0px_#FFFF00] flex justify-center items-center gap-3 hover:bg-[#CC00CC] animate-pulse-slow"
+          >
+            <Map className="w-8 h-8 text-[#FFFF00]" /> TỔNG KẾT SƠ ĐỒ TƯ DUY
+          </motion.button>
+
         </div>
 
         {/* Right Column: Quiz (60%) */}

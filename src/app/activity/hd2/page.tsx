@@ -1,61 +1,33 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, Award, CheckCircle, Table, BrainCircuit, X } from 'lucide-react';
+import { Star, CheckCircle, BrainCircuit, X, ImageIcon, Award } from 'lucide-react';
 import { RUBRIC_CRITERIA } from '../../../data';
 
 export default function ActivityTwo() {
   const [ratings, setRatings] = useState<Record<string, number>>(() => {
     const saved = (typeof window !== 'undefined' ? localStorage.getItem('lactic_rubric_ratings') : null);
     return saved ? JSON.parse(saved) : {
-      'do-dac': 5,
-      'vi-chua-ngot': 4,
-      'mau-sac': 5,
-      'mui-huong': 5,
-      'nhat-ky-onl': 4,
+      'do-dac': 5, 'vi-chua-ngot': 4, 'mau-sac': 5, 'mui-huong': 5, 'nhat-ky-onl': 4,
     };
   });
 
   const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-  // Close lightbox on Esc key
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsLightboxOpen(false);
-    };
-    if (isLightboxOpen) {
-      document.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
-    };
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsLightboxOpen(false); };
+    if (isLightboxOpen) document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isLightboxOpen]);
 
   const reflections = [
-    {
-      q: 'Sữa chua và sữa trước khi ủ có những khác biệt gì về mùi, vị, độ đặc?',
-      a: 'Sữa trước khi ủ có dạng lỏng, vị ngọt béo và mùi thơm của sữa. Sau khi ủ thành sữa chua, sản phẩm chuyển sang trạng thái đặc sánh (đông tụ), có vị chua dịu và mùi thơm nồng nhẹ đặc trưng do quá trình lên men của vi khuẩn Lactic.'
-    },
-    {
-      q: 'Vì sao cần cho sữa chua vào sữa tươi (hoặc sữa đặc đã pha loãng)?',
-      a: 'Đó chính là bước "cấy men giống"! Hộp sữa chua mồi đóng vai trò cung cấp hàng tỷ vi khuẩn Lactic sống. Khi được cho vào môi trường sữa nhiều dinh dưỡng, vi khuẩn Lactic sẽ bắt đầu "ăn" đường, sinh sôi nảy nở và lên men toàn bộ mẻ sữa.'
-    },
-    {
-      q: 'Vì sao trong quá trình làm sữa chua cần ủ ấm sữa ở nhiệt độ khoảng 40°C đến 50°C?',
-      a: 'Nhiệt độ 40°C - 50°C là điều kiện lý tưởng nhất để vi khuẩn Lactic hoạt động. Ở mức nhiệt này, chúng phát triển mạnh mẽ và lên men nhanh chóng. Nếu ủ lạnh quá vi khuẩn sẽ "ngủ đông", còn nếu nóng quá (>50°C) vi khuẩn sẽ bị biến tính và chết!'
-    }
+    { q: 'Sữa chua và sữa trước khi ủ khác nhau chỗ nào nhỉ?', a: 'Sữa lỏng và ngọt. Còn sữa chua thì đặc quánh, chua ngọt thơm lừng!' },
+    { q: 'Vì sao phải ủ sữa ở chỗ ấm (40°C)?', a: 'Vì vi khuẩn Lactic rất thích ấm áp! Lạnh quá thì ngủ nướng, nóng quá thì chết mất!' }
   ];
 
   const handleStarClick = (critId: string, starVal: number) => {
-    const updated = {
-      ...ratings,
-      [critId]: starVal
-    };
+    const updated = { ...ratings, [critId]: starVal };
     setRatings(updated);
     if (typeof window !== 'undefined') localStorage.setItem('lactic_rubric_ratings', JSON.stringify(updated));
     fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd2' }) }).catch(console.error);
@@ -66,81 +38,75 @@ export default function ActivityTwo() {
   const scorePercent = Math.round((currentTotal / totalPossible) * 100);
 
   const getRubricVerdict = (percent: number) => {
-    if (percent >= 90) return { title: 'HOÀN HẢO MỸ MÃN 🏆', msg: 'Một mẻ vi khuẩn Lactic phát triển tuyệt vời, sữa dẻo thơm, đặc sánh chín sữa mịn!', color: 'text-white bg-[#111111] border-science-dark' };
-    if (percent >= 70) return { title: 'ĐẠT CHUẨN TỐT 👍', msg: 'Sữa đông ấm miệng, chua ngọt tròn vị, nhật trình viết tay khá đầy đủ. Cố gắng phát huy con nhé!', color: 'text-science-dark bg-white border-2 border-science-dark' };
-    return { title: 'CẦN CẢI THIỆN THÊM 🧪', msg: 'Sữa chua có thể chưa đủ ẩm hoặc chưa chuẩn thời gian ủ mồi. Em hãy mở HĐ4 tham khảo mẹo cứu nhé!', color: 'text-white bg-[#B00020] border-[#B00020]' };
+    if (percent >= 90) return { title: 'XUẤT SẮC! 🏆', color: 'bg-[#FF1493] text-white border-white' };
+    if (percent >= 70) return { title: 'RẤT TỐT! 👍', color: 'bg-[#00FF00] text-black border-black' };
+    return { title: 'CỐ GẮNG LÊN! 🧪', color: 'bg-[#FF4500] text-white border-white' };
   };
 
   const verdict = getRubricVerdict(scorePercent);
 
   return (
-    <section id="hd2" className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-science-bg border-b border-science-dark/20">
-      <div className="max-w-7xl mx-auto">
-
-        {/* Step Header */}
-        <div className="mb-12">
-          <div className="flex items-center space-x-3 mb-2">
-            <span className="font-mono text-5xl md:text-6xl font-bold text-[#D9D9D9] leading-none">02</span>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-science-dark/70 block">Bước 2: Cùng xem lại &amp; Đánh giá (Kolb - Phản ngẫm)</span>
-              <h2 className="font-display font-medium text-2xl md:text-3xl text-science-dark tracking-tight">
-                HĐ2 — Cùng chấm điểm Rubric &amp; Thảo luận
-              </h2>
-            </div>
+    <section id="hd2" className="min-h-screen w-full flex flex-col p-4 md:p-6 bg-[#1E0078] font-sans">
+      
+      {/* HEADER */}
+      <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="px-4 py-1.5 rounded-full bg-[#FFFF00] text-black font-black text-lg uppercase border-2 border-black">
+            ⭐ Chặng 2
           </div>
-          <p className="text-sm md:text-base text-science-dark/70 max-w-3xl leading-relaxed mt-2">
-            Học sinh mang sản phẩm sữa chua tự làm tới lớp. Thầy cô và cả lớp đóng vai những chuyên gia ẩm thực nhí để chấm điểm chéo các hũ sữa chua và cùng trả lời những câu hỏi khoa học thú vị nhé.
-          </p>
+          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
+            CHẤM ĐIỂM <span className="text-[#FF00FF]">SỮA CHUA!</span>
+          </h2>
         </div>
+      </div>
 
-        {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-
-          {/* Interactive Star Rubric Selection Panel */}
-          <div className="p-6 sm:p-8 bg-white border border-science-dark/20 rounded-none space-y-6">
-            <div className="flex items-center justify-between border-b border-science-dark/20 pb-4">
-              <div>
-                <h3 className="font-mono font-bold text-xs uppercase tracking-wider text-science-dark flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-science-dark" />
-                  <span>Trình Chiếu Rubric Chữ Vàng</span>
-                </h3>
-                <p className="text-[11px] text-science-dark/70 mt-1">Click chấm sao chéo hũ của nhóm bạn em nhé!</p>
-              </div>
-              <div className="text-right">
-                <span className="font-mono text-[9px] text-science-dark/70 uppercase block tracking-wider font-bold">Điểm số</span>
-                <span className="font-mono text-xl font-bold text-science-dark">{currentTotal} / {totalPossible}</span>
+      {/* MAIN CONTENT AREA */}
+      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0">
+        
+        {/* Left Column: Rubric Panel (60%) */}
+        <div className="w-full md:w-[60%] flex flex-col">
+          <div className="flex-1 bg-[#00E5FF] border-4 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_#FFFF00] flex flex-col relative overflow-hidden">
+            
+            <div className="flex-none flex items-center justify-between bg-white rounded-2xl p-3 border-2 border-black mb-4 shadow-inner">
+              <h3 className="font-black text-xl text-black flex items-center gap-2">
+                <Award className="w-6 h-6 text-[#FF00FF]" /> BẢNG PHONG THẦN
+              </h3>
+              <div className="flex items-center gap-3">
+                <span className="font-black text-2xl text-black">{currentTotal}/{totalPossible}</span>
+                <div className={`px-3 py-1 rounded-xl border-2 font-black text-sm ${verdict.color}`}>
+                  {verdict.title}
+                </div>
               </div>
             </div>
 
             {/* Rubric rows */}
-            <div className="space-y-4">
+            <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
               {RUBRIC_CRITERIA.map((crit) => {
                 const currentRating = ratings[crit.id] || 0;
                 return (
-                  <div key={crit.id} className="space-y-1.5 p-4 rounded-none bg-science-bg border border-science-dark/20 hover:border-science-dark transition-all">
-                    <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-science-dark font-mono uppercase tracking-wide">{crit.label}</span>
-                      <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-science-dark/70">Bậc {currentRating}/5</span>
+                  <div key={crit.id} className="p-3 rounded-2xl bg-white border-2 border-black flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm">
+                    <div className="flex-1 text-center sm:text-left">
+                      <span className="text-lg font-black text-black uppercase block">{crit.label}</span>
+                      <span className="text-sm font-medium text-gray-600 block">{crit.description}</span>
                     </div>
-                    <p className="text-xs text-science-dark/70 leading-relaxed pr-6">{crit.description}</p>
 
-                    {/* Stars element */}
-                    <div className="flex space-x-1 pt-1.5">
+                    <div className="flex space-x-1 bg-gray-100 p-1.5 rounded-full border border-gray-300 shrink-0">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.9 }}
                           key={star}
-                          type="button"
                           onClick={() => handleStarClick(crit.id, star)}
-                          className="focus:outline-none transition-transform hover:scale-110 cursor-pointer"
+                          className="focus:outline-none p-0.5"
                         >
                           <Star
-                            className={`w-5 h-5 transition-colors ${
+                            className={`w-6 h-6 sm:w-8 sm:h-8 transition-all ${
                               star <= currentRating
-                                ? 'fill-black text-science-dark'
-                                : 'text-[#D9D9D9] hover:text-science-dark'
+                                ? 'fill-[#FFFF00] text-[#FF8C00] drop-shadow-sm'
+                                : 'fill-white text-gray-400'
                             }`}
                           />
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                   </div>
@@ -148,142 +114,94 @@ export default function ActivityTwo() {
               })}
             </div>
 
-            {/* Live calculated verdict */}
-            <div className={`p-5 rounded-none border ${verdict.color} transition-all duration-300`}>
-              <h4 className="font-mono text-xs font-bold uppercase tracking-widest mb-1.5 flex items-center">
-                <CheckCircle className="w-4 h-4 mr-1.5 shrink-0" />
-                <span>Kết Quả Đánh Giá: {verdict.title} ({scorePercent}%)</span>
-              </h4>
-              <p className="text-xs leading-relaxed opacity-95">{verdict.msg}</p>
-            </div>
           </div>
+        </div>
 
-          {/* Right side: Reflective Questions Cards & Classroom Dashboard Table */}
-          <div className="space-y-8">
+        {/* Right Column: Flashcards & Image (40%) */}
+        <div className="w-full md:w-[40%] flex flex-col gap-4">
+          
+          {/* Flashcards */}
+          <div className="flex-1 bg-[#FF00FF] border-4 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_#00E5FF] flex flex-col">
+            <div className="flex-none flex items-center justify-center mb-3 bg-white rounded-full py-1.5 border-2 border-black shadow-inner">
+              <h3 className="font-black text-lg text-black flex items-center gap-2 uppercase">
+                <BrainCircuit className="w-5 h-5 text-[#00E5FF]" /> CÂU HỎI THƯỞNG!
+              </h3>
+            </div>
 
-            {/* Reflection Flashcards */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <BrainCircuit className="w-5 h-5 text-science-dark" />
-                <h3 className="font-mono font-bold text-xs tracking-widest text-science-dark uppercase">
-                  GÓC ÔN TẬP PHẢN NGẪM SÂU
-                </h3>
-              </div>
-              <p className="text-xs text-science-dark/70">Các em hãy bấm vào câu hỏi dưới đây xem trả lời khoa học nha!</p>
-
-              <div className="space-y-3">
-                {reflections.map((ref, idx) => {
-                  const isOpen = activeQuestion === idx;
-                  return (
-                    <div
-                      key={idx}
-                      className="border border-science-dark/20 rounded-none overflow-hidden bg-white transition-all duration-200"
+            <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
+              {reflections.map((ref, idx) => {
+                const isOpen = activeQuestion === idx;
+                return (
+                  <motion.div layout key={idx} className="border-2 border-black rounded-2xl overflow-hidden bg-[#FFFF00] shadow-sm">
+                    <button
+                      onClick={() => setActiveQuestion(isOpen ? null : idx)}
+                      className="w-full text-left p-3 focus:outline-none flex justify-between items-center hover:bg-[#FFE600]"
                     >
-                      <button
-                        onClick={() => setActiveQuestion(isOpen ? null : idx)}
-                        className="w-full text-left p-4 focus:outline-none flex justify-between items-center bg-science-bg hover:bg-[#F2F2F2] transition-colors"
-                      >
-                        <span className="text-xs font-mono font-bold text-science-dark uppercase tracking-wider leading-snug">
-                          0{idx + 1}. {ref.q}
-                        </span>
-                        <span className="text-[10px] font-mono font-bold text-science-dark shrink-0 ml-4">
-                          {isOpen ? '[- THU GỌN]' : '[+ XEM TỰ LUẬN]'}
-                        </span>
-                      </button>
-
-                      {isOpen && (
-                        <div className="p-4 border-t border-science-dark/20 bg-white text-xs text-science-dark/70 leading-relaxed font-sans">
-                          {ref.a}
+                      <span className="text-sm font-black text-black leading-tight flex items-center gap-2">
+                        <div className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center shrink-0 text-xs">
+                          {idx + 1}
                         </div>
+                        {ref.q}
+                      </span>
+                    </button>
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div 
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="px-3 pb-3 font-bold text-black text-sm"
+                        >
+                          <div className="p-3 bg-white rounded-xl border-2 border-black shadow-inner flex gap-2">
+                            <span className="text-xl">💡</span>
+                            <span>{ref.a}</span>
+                          </div>
+                        </motion.div>
                       )}
-                    </div>
-                  );
-                })}
-              </div>
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
             </div>
-
-            {/* Comparison of classroom teams - Image Showcase */}
-            <div className="bg-white border border-science-dark/20 rounded-none p-6 space-y-4">
-              <div className="flex items-center space-x-2 border-b border-science-dark/20 pb-3">
-                <Table className="w-4 h-4 text-science-dark" />
-                <h4 className="font-mono font-bold text-xs uppercase tracking-widest text-science-dark">
-                  Hình Ảnh Thực Nghiệm 3 Nhóm Mẫu
-                </h4>
-              </div>
-
-              <div className="bg-white border-2 border-science-dark p-2 shadow-[4px_4px_0px_0px_var(--color-science-dark)]">
-                {/* Clickable image — opens lightbox */}
-                <div
-                  className="aspect-video relative overflow-hidden bg-[#F2F2F2] border border-science-dark/20 group cursor-zoom-in"
-                  onClick={() => setIsLightboxOpen(true)}
-                >
-                  <img
-                    src="/models/yogurt_comparison.png"
-                    alt="So sánh 3 trạng thái của sữa chua: Đặc hoàn hảo, Lỏng do thiếu men, và Tách nước do quá nóng"
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-science-base/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="text-white font-mono text-xs font-bold uppercase tracking-widest border border-white px-4 py-2">
-                      🔍 Phóng to ảnh
-                    </span>
-                  </div>
-                </div>
-
-                {/* Caption */}
-                <div className="mt-3 px-2 pb-1 text-center">
-                  <p className="text-xs text-science-dark/70 leading-relaxed">
-                    <strong>Từ trái sang:</strong> Nhóm 1 (Đặc sánh mịn) — Nhóm 2 (Lỏng như nước) — Nhóm 3 (Bị tách nước, chua gắt).
-                  </p>
-                </div>
-              </div>
-            </div>
-
           </div>
+
+          {/* Image Showcase */}
+          <div className="flex-none bg-white p-3 rounded-3xl shadow-[8px_8px_0px_0px_#FFFF00] border-4 border-black text-center h-[200px] flex flex-col justify-center relative overflow-hidden group cursor-zoom-in" onClick={() => setIsLightboxOpen(true)}>
+            <img
+              src="/models/yogurt_comparison.png"
+              alt="So sánh"
+              className="w-full h-full object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="bg-[#FFFF00] text-black font-black text-sm px-3 py-1.5 rounded-full flex items-center gap-1 border-2 border-black uppercase">
+                <ImageIcon className="w-4 h-4" /> Phóng to
+              </span>
+            </div>
+          </div>
+
         </div>
 
       </div>
 
-      {/* ── Lightbox Modal ── */}
+      {/* ── LIGHTBOX MODAL ── */}
       <AnimatePresence>
         {isLightboxOpen && (
-          <motion.div
-            key="lightbox"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4"
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-8"
             onClick={() => setIsLightboxOpen(false)}
           >
-            {/* Close button */}
-            <button
-              onClick={() => setIsLightboxOpen(false)}
-              className="absolute top-4 right-4 z-50 p-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white transition-colors cursor-pointer"
-              aria-label="Đóng"
+            <motion.button whileHover={{ scale: 1.1 }} onClick={() => setIsLightboxOpen(false)}
+              className="absolute top-6 right-6 z-50 p-2 md:p-3 bg-red-600 rounded-full text-white border-2 border-white"
             >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Image container — stop propagation so clicking image doesn't close modal */}
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative max-w-5xl w-full"
-              onClick={(e) => e.stopPropagation()}
+              <X className="w-6 h-6" />
+            </motion.button>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-4xl w-full text-center" onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src="/models/yogurt_comparison.png"
-                alt="So sánh 3 trạng thái của sữa chua"
-                className="w-full h-auto border-2 border-white/20 shadow-2xl"
-              />
-              <div className="mt-3 text-center">
-                <p className="text-white/70 font-mono text-[11px] uppercase tracking-widest">
-                  Từ trái sang: Nhóm 1 (Đặc sánh mịn) — Nhóm 2 (Lỏng như nước) — Nhóm 3 (Bị tách nước, chua gắt)
-                </p>
-                <p className="text-white/40 font-mono text-[10px] mt-1">Nhấn ESC hoặc click ra ngoài để đóng</p>
-              </div>
+              <img src="/models/yogurt_comparison.png" alt="So sánh" className="w-full h-auto rounded-3xl border-4 border-white shadow-2xl mb-4" />
+              <p className="font-black text-lg md:text-2xl text-[#FFFF00] uppercase drop-shadow-md">
+                ⭐ TRÁI (Đặc) — GIỮA (Lỏng) — PHẢI (Hỏng)
+              </p>
             </motion.div>
           </motion.div>
         )}

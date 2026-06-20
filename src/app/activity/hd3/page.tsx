@@ -1,489 +1,194 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
-import { ChevronRight, Share2, Award, Maximize, Minimize } from 'lucide-react';
-import { QUIZ_QUESTIONS } from '../../../data';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Microscope, Sparkles, RefreshCcw } from 'lucide-react';
+import Script from 'next/script';
 
-const OPTIONS = [
-  'lên men',
-  'lỏng',
-  'lactic',
-  'chua ngọt',
-  'tốt nhất',
+const QUIZ_QUESTIONS = [
+  { q: "Sữa chua được tạo ra nhờ vi khuẩn tên là {input}", a: "Lactic" },
+  { q: "Vi khuẩn 'ăn' đường tạo ra axit {input}", a: "Lactic" },
+  { q: "Việc biến đổi đường thành axit gọi là {input}", a: "Lên men" },
+  { q: "Axit làm cho protein bị {input} lại", a: "Đông tụ" },
+  { q: "Vi khuẩn Lactic rất tốt cho bụng, được gọi là {input}", a: "Lợi khuẩn" }
 ];
 
-const CORRECT_ANSWERS: Record<number, string> = {
-  1: 'lactic',
-  2: 'lên men',
-  3: 'tốt nhất',
-  4: 'lỏng',
-  5: 'chua ngọt',
-};
+const WORD_BANK = ["Lactic", "Lên men", "Đông tụ", "Lợi khuẩn"];
 
 export default function ActivityThree() {
-  useEffect(() => {
-    import('@google/model-viewer').catch(console.error);
-  }, []);
+  const [quizAnswers, setQuizAnswers] = useState<string[]>(Array(QUIZ_QUESTIONS.length).fill(''));
+  const [showResults, setShowResults] = useState(false);
+  const [quizScore, setQuizScore] = useState(0);
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
 
-  /* ── Fullscreen state for 3D model ── */
-  const [isModelFullscreen, setIsModelFullscreen] = useState(false);
-  const modelContainerRef = useRef<HTMLDivElement>(null);
-
-  /* ── Fill in the blanks state ── */
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>(() => {
-    const saved = (typeof window !== 'undefined' ? localStorage.getItem('lactic_quiz_answers_new') : null);
-    return saved ? JSON.parse(saved) : { 1: '', 2: '', 3: '', 4: '', 5: '' };
-  });
-
-  const [activeBlank, setActiveBlank] = useState<number | null>(1);
-
-  const [quizSubmitted, setQuizSubmitted] = useState(() => {
-    return (typeof window !== 'undefined' ? localStorage.getItem('lactic_quiz_submitted_new') : null) === 'true';
-  });
-
-  const [quizResults, setQuizResults] = useState<Record<number, boolean>>(() => {
-    const saved = (typeof window !== 'undefined' ? localStorage.getItem('lactic_quiz_results_new') : null);
-    return saved ? JSON.parse(saved) : {};
-  });
-
-  const [scoreCount, setScoreCount] = useState(() => {
-    const saved = (typeof window !== 'undefined' ? localStorage.getItem('lactic_quiz_score_new') : null);
-    return saved ? Number(saved) : 0;
-  });
-
-  useEffect(() => {
-    if (quizSubmitted && scoreCount === 5) {
-      fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd3' }) }).catch(console.error);
-    }
-  }, [quizSubmitted, scoreCount]);
-
-  /* Monitor browser fullscreen state changes */
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsModelFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
-  const toggleModelFullscreen = () => {
-    if (!modelContainerRef.current) return;
-    if (!document.fullscreenElement) {
-      modelContainerRef.current
-        .requestFullscreen()
-        .then(() => setIsModelFullscreen(true))
-        .catch(() => {});
-    } else {
-      document
-        .exitFullscreen()
-        .then(() => setIsModelFullscreen(false))
-        .catch(() => {});
-    }
+  const handleAnswerChange = (index: number, value: string) => {
+    const newAnswers = [...quizAnswers];
+    newAnswers[index] = value;
+    setQuizAnswers(newAnswers);
+    setShowResults(false);
   };
 
-  const handleSelectOption = (option: string) => {
-    if (quizSubmitted) return;
-
-    let targetBlank = activeBlank;
-    if (targetBlank === null) {
-      targetBlank = [1, 2, 3, 4, 5].find((num) => !selectedAnswers[num]) || null;
-    }
-
-    if (targetBlank === null) return;
-
-    const updated = { ...selectedAnswers };
-
-    // Clear option if it was already selected in another blank
-    Object.keys(updated).forEach((key) => {
-      const k = Number(key);
-      if (updated[k] === option) {
-        updated[k] = '';
-      }
+  const submitQuiz = () => {
+    let score = 0;
+    quizAnswers.forEach((ans, idx) => {
+      if (ans.toLowerCase().trim() === QUIZ_QUESTIONS[idx].a.toLowerCase()) score++;
     });
-
-    updated[targetBlank] = option;
-    setSelectedAnswers(updated);
-    if (typeof window !== 'undefined') localStorage.setItem('lactic_quiz_answers_new', JSON.stringify(updated));
-
-    // Auto-advance
-    const nextEmpty = [1, 2, 3, 4, 5].find((num) => num !== targetBlank && !updated[num]);
-    if (nextEmpty) {
-      setActiveBlank(nextEmpty);
-    } else {
-      setActiveBlank(null);
-    }
+    setQuizScore(score);
+    setShowResults(true);
+    fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd3' }) }).catch(console.error);
   };
 
-  const handleClearBlank = (blankNum: number) => {
-    if (quizSubmitted) return;
-    const updated = { ...selectedAnswers, [blankNum]: '' };
-    setSelectedAnswers(updated);
-    if (typeof window !== 'undefined') localStorage.setItem('lactic_quiz_answers_new', JSON.stringify(updated));
-    setActiveBlank(blankNum);
-  };
-
-  const handleBlankClick = (blankNum: number) => {
-    if (quizSubmitted) return;
-    setActiveBlank(blankNum);
-  };
-
-  const checkQuizAnswers = () => {
-    let corrected: Record<number, boolean> = {};
-    let count = 0;
-
-    Object.entries(CORRECT_ANSWERS).forEach(([key, val]) => {
-      const num = Number(key);
-      const correct = selectedAnswers[num] === val;
-      corrected[num] = correct;
-      if (correct) {
-        count++;
-      }
-    });
-
-    setQuizResults(corrected);
-    setScoreCount(count);
-    setQuizSubmitted(true);
-
-    if (typeof window !== 'undefined') localStorage.setItem('lactic_quiz_results_new', JSON.stringify(corrected));
-    if (typeof window !== 'undefined') localStorage.setItem('lactic_quiz_score_new', count.toString());
-    if (typeof window !== 'undefined') localStorage.setItem('lactic_quiz_submitted_new', 'true');
-  };
-
-  const resetQuiz = () => {
-    const defaultAnswers = { 1: '', 2: '', 3: '', 4: '', 5: '' };
-    setSelectedAnswers(defaultAnswers);
-    setQuizResults({});
-    setQuizSubmitted(false);
-    setScoreCount(0);
-    setActiveBlank(1);
-
-    if (typeof window !== 'undefined') localStorage.removeItem('lactic_quiz_answers_new');
-    if (typeof window !== 'undefined') localStorage.removeItem('lactic_quiz_results_new');
-    if (typeof window !== 'undefined') localStorage.removeItem('lactic_quiz_score_new');
-    if (typeof window !== 'undefined') localStorage.removeItem('lactic_quiz_submitted_new');
-  };
-
-  const renderBlank = (num: number) => {
-    const value = selectedAnswers[num];
-    const isFilled = !!value;
-    const isActive = activeBlank === num;
-    const correct = quizResults[num];
-
-    let btnClass = 'inline-flex items-center justify-center px-2 py-0.5 font-mono font-bold text-[11px] mx-1 border transition-all rounded-none ';
-
-    if (quizSubmitted) {
-      if (correct) {
-        btnClass += 'border-emerald-600 bg-emerald-50 text-emerald-800 cursor-default';
-      } else {
-        btnClass += 'border-red-600 bg-red-50 text-red-800 cursor-default';
-      }
-    } else {
-      if (isActive) {
-        btnClass += 'border-science-dark bg-yellow-300 text-science-dark shadow-[1px_1px_0px_0px_var(--color-science-dark)] scale-105';
-      } else if (isFilled) {
-        btnClass += 'border-science-dark bg-science-bg text-science-dark hover:bg-neutral-100 cursor-pointer';
-      } else {
-        btnClass += 'border-dashed border-neutral-400 bg-white text-neutral-400 hover:border-science-dark hover:text-science-dark cursor-pointer';
-      }
-    }
-
-    return (
-      <button
-        type="button"
-        onClick={() => {
-          if (isFilled && !quizSubmitted) {
-            handleClearBlank(num);
-          } else {
-            handleBlankClick(num);
-          }
-        }}
-        className={btnClass}
-        style={!quizSubmitted && isActive ? { transform: 'translateY(-0.5px)' } : undefined}
-      >
-        <span className="text-[8px] text-neutral-400 mr-1 font-mono">({num})</span>
-        {isFilled ? value : '___________'}
-        {isFilled && !quizSubmitted && (
-          <span className="ml-1 text-neutral-400 hover:text-red-600 text-[9px] font-mono">×</span>
-        )}
-        {quizSubmitted && (
-          <span className="ml-1 text-[10px] font-bold">
-            {correct ? ' ✓' : ' ✗'}
-          </span>
-        )}
-      </button>
-    );
-  };
+  const handleDragStart = (e: any, word: string) => { e.dataTransfer.setData("text/plain", word); setSelectedWord(word); };
+  const handleDrop = (e: any, index: number) => { e.preventDefault(); const word = e.dataTransfer.getData("text/plain"); if (word) { handleAnswerChange(index, word); setSelectedWord(null); } };
+  const handleDragOver = (e: any) => e.preventDefault();
+  const handleBlankClick = (index: number) => { if (selectedWord) { handleAnswerChange(index, selectedWord); setSelectedWord(null); } else if (quizAnswers[index]) { handleAnswerChange(index, ''); } };
 
   return (
-    <section id="hd3" className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white border-b border-science-dark/20">
-      <div className="max-w-7xl mx-auto">
+    <section id="hd3" className="min-h-screen w-full flex flex-col p-4 md:p-6 bg-[#00A300] font-sans">
+      <Script src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" type="module" strategy="lazyOnload" />
 
-        {/* Step Header */}
-        <div className="mb-12">
-          <div className="flex items-center space-x-3 mb-2">
-            <span className="font-mono text-5xl md:text-6xl font-bold text-[#D9D9D9] leading-none">03</span>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-science-dark/70 block">Bước 3: Khám phá thế giới vi sinh (Kolb - Khái niệm hóa)</span>
-              <h2 className="font-display font-medium text-2xl md:text-3xl text-science-dark tracking-tight">
-                HĐ3 — Quan sát vi sinh vật dưới kính hiển vi ảo
-              </h2>
+      {/* HEADER */}
+      <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="px-4 py-1.5 rounded-full bg-[#00FF00] text-black font-black text-lg uppercase border-2 border-black">
+            🦠 Chặng 3 
+          </div>
+          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
+            SOI VI KHUẨN <span className="text-[#FF0000]">LACTIC!</span>
+          </h2>
+        </div>
+      </div>
+
+      {/* MAIN CONTENT AREA */}
+      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0">
+        
+        {/* Left Column: 3D Viewer (40%) */}
+        <div className="w-full md:w-[40%] flex flex-col min-h-[300px]">
+          <div className="flex-1 bg-[#FFFF00] rounded-3xl border-4 border-black shadow-[8px_8px_0px_0px_#000000] p-4 flex flex-col relative">
+            <div className="flex-none bg-black rounded-full px-4 py-2 flex justify-center items-center text-white mb-3 border-2 border-white">
+              <span className="font-black text-lg uppercase flex items-center gap-2">
+                <Microscope className="w-5 h-5 text-[#00FF00]" /> RADAR KÍNH HIỂN VI
+              </span>
+            </div>
+
+            <div className="flex-1 bg-white rounded-2xl overflow-hidden relative border-4 border-black shadow-inner">
+              <model-viewer
+                src="/models/Meshy_AI_Rod_shaped_Bacteria_E_0606101028_texture.glb"
+                camera-controls
+                auto-rotate
+                shadow-intensity="1"
+                exposure="1.2"
+                style={{ width: '100%', height: '100%', outline: 'none' }}
+                interaction-prompt="none"
+              />
+              
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black text-white px-4 py-2 rounded-full border-2 border-white pointer-events-none">
+                <span className="text-sm font-black flex items-center gap-2 uppercase whitespace-nowrap">
+                  <RefreshCcw className="w-4 h-4 text-[#00FF00]" /> Chạm để xoay 3D!
+                </span>
+              </div>
             </div>
           </div>
-          <p className="text-sm md:text-base text-science-dark/70 max-w-3xl leading-relaxed mt-2">
-            Chào mừng các em đến với phòng thí nghiệm sinh học lớp 5! Cùng tự tay xoay núm điều chỉnh kính hiển vi ảo để nhìn rõ nét cấu tạo vi khuẩn Lactic, và hoàn thành trò chơi điền từ vào ô trống củng cố bài học nhé.
-          </p>
         </div>
 
-        {/* 2-Columns layout on Desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
-
-          {/* Column Left: Visualizer and Mindmap (7 cols) */}
-          <div className="lg:col-span-7 space-y-6 flex flex-col justify-between">
-
-            {/* 3D Model Viewer */}
-            <div
-              ref={modelContainerRef}
-              className="bg-white border-2 border-science-dark overflow-hidden flex flex-col"
-              style={{
-                boxShadow: isModelFullscreen ? 'none' : '6px 6px 0px 0px #000000',
-                height: isModelFullscreen ? '100vh' : 'auto',
-              }}
-            >
-              {/* Top bar */}
-              <div className="bg-science-base text-white px-5 py-3 flex items-center justify-between">
-                <h3 className="font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-widest flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 bg-emerald-400" />
-                  Mô hình 3D — Vi khuẩn Lactobacillus
-                </h3>
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={toggleModelFullscreen}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 border border-neutral-600 bg-neutral-900
-                               text-[9px] font-mono font-bold uppercase tracking-widest text-white
-                               hover:bg-neutral-700 transition-colors cursor-pointer"
-                    title={isModelFullscreen ? 'Thu nhỏ' : 'Phóng to toàn màn hình'}
-                  >
-                    {isModelFullscreen ? (
-                      <>
-                        <Minimize className="w-3.5 h-3.5" />
-                        <span>Thu nhỏ</span>
-                      </>
-                    ) : (
-                      <>
-                        <Maximize className="w-3.5 h-3.5" />
-                        <span>Phóng to</span>
-                      </>
-                    )}
-                  </button>
-                  <span className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 bg-red-500" />
-                    <span className="w-2.5 h-2.5 bg-yellow-400" />
-                    <span className="w-2.5 h-2.5 bg-emerald-400" />
-                  </span>
-                </div>
-              </div>
-
-              {/* Model viewport */}
-              <div className={`bg-[#111111] relative ${isModelFullscreen ? 'flex-1' : 'aspect-video'}`}>
-                {/* @google/model-viewer web component */}
-                <model-viewer
-                  src="/models/Meshy_AI_Rod_shaped_Bacteria_E_0606101028_texture.glb"
-                  alt="Mô hình 3D vi khuẩn Lactobacillus"
-                  auto-rotate
-                  camera-controls
-                  shadow-intensity="1"
-                  shadow-softness="1"
-                  exposure="1"
-                  camera-orbit="45deg 55deg 2.5m"
-                  interaction-prompt="auto"
-                  touch-action="pan-y"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: '#111111',
-                    outline: 'none',
-                  }}
-                >
-                  {/* Fallback content shown while .glb is loading */}
-                  <div
-                    slot="poster"
-                    className="absolute inset-0 flex flex-col items-center justify-center bg-[#111111] text-center px-6"
-                  >
-                    <div className="inline-flex p-4 border-2 border-dashed border-neutral-600 mb-4">
-                      <svg className="w-10 h-10 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
-                      </svg>
-                    </div>
-                    <p className="font-mono text-xs text-neutral-400 uppercase tracking-widest">
-                      Đang tải mô hình 3D (~18 MB)...
-                    </p>
-                    <p className="font-mono text-[10px] text-neutral-600 mt-1">
-                      Vui lòng đợi trong giây lát
-                    </p>
-                  </div>
-                </model-viewer>
-              </div>
-
-              {/* Bottom info strip */}
-              <div className="border-t-2 border-science-dark bg-white px-5 py-3 flex items-center justify-between">
-                <span className="font-mono text-[10px] font-bold text-science-dark/60 uppercase tracking-widest">
-                  🖱️ Xoay · Zoom · Kéo để khám phá
-                </span>
-                <span className="font-mono text-[10px] text-[#CCCCCC]">
-                  WebGL · Auto-rotate
-                </span>
-              </div>
-            </div>
-
-            {/* Mind Map Block representation */}
-            <div className="bg-white border border-science-dark/20 rounded-none p-6">
-              <h3 className="font-mono font-bold text-xs text-science-dark uppercase tracking-widest mb-4 flex items-center space-x-2">
-                <Share2 className="w-4 h-4 text-science-dark" />
-                <span>SƠ ĐỒ TƯ DUY KHÁI QUÁT HÓA 🗺️</span>
+        {/* Right Column: Quiz (60%) */}
+        <div className="w-full md:w-[60%] flex flex-col">
+          <div className="flex-1 bg-white border-4 border-black rounded-3xl p-4 sm:p-6 shadow-[8px_8px_0px_0px_#00FF00] flex flex-col">
+            
+            <div className="flex-none flex items-center mb-4 bg-[#FF0000] rounded-2xl py-3 justify-center border-4 border-black shadow-inner">
+              <h3 className="font-black text-xl md:text-2xl text-white flex items-center gap-2 uppercase">
+                <Sparkles className="w-6 h-6 text-[#FFFF00]" />
+                TRÒ CHƠI KÉO THẢ TỪ VỰNG
               </h3>
+            </div>
 
-              {/* Grid Mind Map representation */}
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-
-                {/* Node Center */}
-                <div className="sm:col-span-4 p-4 bg-science-base text-white rounded-none border border-science-dark text-center">
-                  <span className="font-mono font-bold text-xs block uppercase tracking-wider">VI KHUẨN LACTIC</span>
-                  <span className="font-mono text-[9px] uppercase tracking-widest opacity-80 mt-1 block">(Lợi Khuẩn Số Một)</span>
-                </div>
-
-                {/* Arrow connector */}
-                <div className="hidden sm:block sm:col-span-1 text-center text-neutral-400">
-                  <ChevronRight className="w-5 h-5 mx-auto" />
-                </div>
-
-                {/* Nodes children */}
-                <div className="sm:col-span-7 space-y-2">
-                  {[
-                    { label: '🌾 Lên men đường', desc: 'Sử dụng bầu sữa bột/đường Lactose để dồi dào sinh khối.' },
-                    { label: '🧪 Tạo vị Axit Lactic', desc: 'Tạo vị chua thanh đặc thù, tăng độ bền dưỡng chất.' },
-                    { label: '🥛 Sữa đông dẻo', desc: 'Làm đông tụ protein trong môi trường nhiệt độ thích hợp.' },
-                    { label: '🥒 Ứng dụng dưa muối', desc: 'Khống chế vi sinh vật gây thối và làm giòn dưa cải.' }
-                  ].map((node, idx) => (
-                    <div key={idx} className="p-2.5 bg-science-bg border border-science-dark/20 rounded-none text-left hover:border-science-dark transition-colors flex items-start space-x-2.5">
-                      <div className="mt-1.5 w-1.5 h-1.5 rounded-none bg-science-base" />
-                      <div>
-                        <strong className="text-xs font-mono uppercase tracking-wide text-science-dark block">{node.label}</strong>
-                        <span className="text-[10px] text-science-dark/70 leading-snug">{node.desc}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
+            {/* Word Bank */}
+            <div className="flex-none bg-gray-100 p-4 rounded-2xl border-2 border-gray-400 mb-4 flex flex-col justify-center">
+              <p className="text-sm font-black text-gray-500 uppercase mb-2 text-center">📦 KHO TỪ VỰNG (KÉO HOẶC CHẠM)</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {WORD_BANK.map((word) => (
+                  <motion.div
+                    key={word}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, word)}
+                    onClick={() => setSelectedWord(word === selectedWord ? null : word)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 py-2 rounded-xl font-black text-lg border-2 cursor-pointer select-none transition-all shadow-sm
+                      ${selectedWord === word ? 'bg-[#FFFF00] border-black text-black scale-105 rotate-2' : 'bg-white border-gray-400 text-blue-700'}
+                    `}
+                  >
+                    {word}
+                  </motion.div>
+                ))}
               </div>
             </div>
 
-          </div>
+            {/* Quiz Sentences */}
+            <div className="flex-1 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+              {QUIZ_QUESTIONS.map((item, idx) => {
+                const parts = item.q.split('{input}');
+                const isCorrect = showResults && quizAnswers[idx].toLowerCase().trim() === item.a.toLowerCase();
+                const isWrong = showResults && !isCorrect;
 
-          {/* Column Right: Interactive blanks game (5 cols) */}
-          <div className="lg:col-span-5 bg-white border border-science-dark/20 rounded-none p-6 flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="border-b border-science-dark/20 pb-3">
-                <h3 className="font-mono font-bold text-xs uppercase tracking-widest text-science-dark flex items-center space-x-2">
-                  <Award className="w-5 h-5 text-science-dark" />
-                  <span>CỦNG CỐ KIẾN THỨC BẰNG MINIGAME</span>
-                </h3>
-                <p className="text-[11px] text-science-dark/70 mt-1 pr-4">
-                  Thử tài lý thuyết bài học Lớp 5. Điền từ thích hợp vào từng chỗ trống:
-                </p>
-              </div>
-
-              {/* Questions stack */}
-              <div className="space-y-5 pt-2">
-                {QUIZ_QUESTIONS.map((q) => {
-                  return (
-                    <div key={q.id} className="text-xs space-y-1.5 border-b border-[#F2F2F2] pb-3 last:border-b-0 last:pb-0">
-                      <span className="font-mono text-[9px] text-science-dark/60 block font-bold tracking-wider">CÂU HỎI {q.id}</span>
-                      <div className="text-neutral-800 leading-relaxed font-sans text-xs">
-                        {q.sentenceBefore}
-                        {renderBlank(q.id)}
-                        {q.sentenceAfter}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Selection Options panel */}
-            {!quizSubmitted && (
-              <div className="space-y-3 pt-4 border-t border-science-dark/20 mt-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[9px] font-bold text-neutral-500 uppercase tracking-widest">
-                    {activeBlank ? `👉 Đang chọn cho ô (${activeBlank})` : 'Chọn một ô trống ở trên'}
-                  </span>
-                  <span className="font-mono text-[8px] text-[#AAAAAA]">
-                    Nhấn vào từ để chọn
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {OPTIONS.map((opt) => {
-                    const used = Object.values(selectedAnswers).includes(opt);
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        disabled={used}
-                        onClick={() => handleSelectOption(opt)}
-                        className={`px-3 py-1.5 border-2 text-[11px] font-mono font-bold uppercase transition-all rounded-none cursor-pointer ${
-                          used
-                            ? 'border-neutral-200 bg-neutral-100 text-neutral-300 cursor-not-allowed line-through'
-                            : 'border-science-dark bg-white text-science-dark hover:bg-science-base hover:text-white shadow-[2px_2px_0px_0px_var(--color-science-dark)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]'
+                return (
+                  <div 
+                    key={idx} 
+                    className={`p-3 rounded-2xl border-2 transition-colors ${
+                      isCorrect ? 'bg-[#00FF00] border-[#006400]' : isWrong ? 'bg-[#FF0000] border-[#8B0000]' : 'bg-[#F0F8FF] border-blue-300'
+                    }`}
+                  >
+                    <div className="text-base sm:text-lg font-bold text-black leading-snug flex flex-wrap items-center gap-2">
+                      <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center shrink-0 font-black">{idx + 1}</span>
+                      <span>{parts[0]}</span>
+                      
+                      <motion.div
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(e, idx)}
+                        onClick={() => handleBlankClick(idx)}
+                        animate={quizAnswers[idx] ? { scale: [1, 1.05, 1] } : {}}
+                        className={`min-w-[100px] min-h-[36px] px-3 py-1 flex items-center justify-center text-center font-black rounded-lg border-2 border-dashed cursor-pointer transition-all ${
+                          quizAnswers[idx] 
+                            ? 'bg-[#FFFF00] border-black text-black border-solid' 
+                            : selectedWord ? 'bg-yellow-100 border-yellow-400 animate-pulse' : 'bg-white border-gray-400 text-gray-400'
                         }`}
                       >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Quiz interactions control container */}
-            <div className="pt-6 border-t border-science-dark/20 mt-6 space-y-4">
-              {!quizSubmitted ? (
-                <button
-                  onClick={checkQuizAnswers}
-                  disabled={!Object.values(selectedAnswers).every(val => val !== '')}
-                  className={`w-full py-3 border-2 font-mono font-bold text-xs uppercase tracking-widest transition-all rounded-none ${
-                    Object.values(selectedAnswers).every(val => val !== '')
-                      ? 'border-science-dark bg-science-base text-white hover:bg-neutral-800 cursor-pointer shadow-[3px_3px_0px_0px_#888888] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]'
-                      : 'border-neutral-300 bg-neutral-100 text-neutral-400 cursor-not-allowed'
-                  }`}
-                >
-                  NỘP BÀI KIỂM TRA LỚP 5
-                </button>
-              ) : (
-                <div className="space-y-3">
-                  <div className={`p-4 rounded-none border-2 border-science-dark text-center ${
-                    scoreCount === 5 ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'
-                  }`}>
-                    <span className="font-mono text-[9px] text-science-dark/70 uppercase block tracking-wider font-bold">KẾT QUẢ ĐẠT ĐƯỢC</span>
-                    <span className="font-mono font-bold text-lg text-science-dark">{scoreCount} / 5 CÂU ĐÚNG</span>
-                    <p className="text-[10px] text-science-dark/70 mt-1 font-sans">
-                      {scoreCount === 5
-                        ? '"Em đã hoàn thành xuất sắc thử thách khoa học về vi khuẩn Lactic rồi đó!"'
-                        : '"Có một số từ khóa chưa đúng vị trí. Hãy thử lại để đạt kết quả tốt nhất nhé!"'}
-                    </p>
+                        {quizAnswers[idx] || "???"}
+                      </motion.div>
+                      
+                      <span>{parts[1]}</span>
+                    </div>
                   </div>
-                  <button
-                    onClick={resetQuiz}
-                    className="w-full py-2.5 border border-science-dark bg-white text-science-dark text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-[#F2F2F2] transition-colors cursor-pointer rounded-none"
-                  >
-                    THỬ LẠI TỪ ĐẦU
-                  </button>
-                </div>
-              )}
+                );
+              })}
             </div>
 
+            {/* Submit Action */}
+            <div className="flex-none mt-4 pt-4 border-t-2 border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={submitQuiz}
+                className="w-full sm:w-auto px-8 py-3 bg-[#0000FF] text-white rounded-2xl font-black text-xl border-4 border-black shadow-[4px_4px_0px_0px_#00E5FF] uppercase hover:bg-[#0000CC]"
+              >
+                CHẤM ĐIỂM NGAY! 🎯
+              </motion.button>
+              
+              <AnimatePresence>
+                {showResults && (
+                  <motion.div 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="bg-[#FFFF00] border-2 border-black px-4 py-2 rounded-xl text-center w-full sm:w-auto"
+                  >
+                    <span className="text-lg font-black text-black uppercase">
+                      Đúng: <span className="text-2xl text-[#FF0000]">{quizScore}/{QUIZ_QUESTIONS.length}</span>
+                    </span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            
           </div>
-
         </div>
 
       </div>

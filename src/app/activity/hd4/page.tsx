@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Play, Pause, RotateCcw, HelpCircle, Eye, EyeOff, BookOpen } from 'lucide-react';
+import { Play, Pause, RotateCcw, HelpCircle, Eye, BookOpen, Mail, Zap, AlarmClock, X } from 'lucide-react';
 
 export default function ActivityFour() {
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(300);
   const [timerRunning, setTimerRunning] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showAnswer, setShowAnswer] = useState(false);
@@ -24,253 +24,223 @@ export default function ActivityFour() {
         });
       }, 1000);
     } else {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
     }
-
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, [timerRunning]);
 
-  const handleStartPause = () => {
-    setTimerRunning(!timerRunning);
-  };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setShowHint(false); setShowAnswer(false); }
+    };
+    if (showHint || showAnswer) document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showHint, showAnswer]);
 
-  const handleReset = () => {
-    setTimerRunning(false);
-    setTimeLeft(300);
-  };
-
+  const handleStartPause = () => setTimerRunning(!timerRunning);
+  const handleReset = () => { setTimerRunning(false); setTimeLeft(300); };
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const isDanger = timeLeft > 0 && timeLeft <= 60;
+  const isZero = timeLeft === 0;
+
   return (
-    <section id="hd4" className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 bg-white border-b border-science-dark/20">
-      <div className="max-w-7xl mx-auto">
+    <section id="hd4" className={`min-h-screen w-full flex flex-col p-4 md:p-6 font-sans transition-colors duration-500 ${isDanger ? 'bg-[#FF0000]' : 'bg-[#FF8C00]'}`}>
+      
+      {/* HEADER */}
+      <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="px-4 py-1.5 rounded-full bg-[#FF4500] text-white font-black text-lg uppercase border-2 border-black">
+            🚑 Chặng 4
+          </div>
+          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
+            ĐIỆP VỤ <span className="text-[#0000FF]">CỨU SỮA CHUA!</span>
+          </h2>
+        </div>
+      </div>
+
+      {/* MAIN CONTENT AREA */}
+      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0">
         
-        {/* Step Header */}
-        <div className="mb-12">
-          <div className="flex items-center space-x-3 mb-2">
-            <span className="font-mono text-5xl md:text-6xl font-bold text-[#D9D9D9] leading-none">04</span>
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-wider text-science-dark/70 block">Bước 4: Giải quyết vấn đề thực tế (Kolb - Vận dụng)</span>
-              <h2 className="font-display font-medium text-2xl md:text-3xl text-science-dark tracking-tight">
-                HĐ4 — Thử tài giải cứu mẻ sữa chua hỏng
-              </h2>
+        {/* Left Column: Problem Case & Buttons (60%) */}
+        <div className="w-full md:w-[60%] flex flex-col gap-4">
+          <div className="flex-1 bg-white border-4 border-black rounded-3xl p-6 shadow-[8px_8px_0px_0px_#000000] relative flex flex-col">
+            
+            <div className="absolute top-0 left-0 w-full h-2 flex rounded-t-3xl overflow-hidden">
+              {[...Array(20)].map((_, i) => (
+                <div key={i} className={`flex-1 ${i % 2 === 0 ? 'bg-[#FF0000]' : 'bg-[#0000FF]'}`} />
+              ))}
+            </div>
+
+            <div className="flex items-center gap-3 mb-4 mt-2">
+              <div className="p-2 bg-[#FFFF00] border-2 border-black rounded-full">
+                <Mail className="w-6 h-6 text-black" />
+              </div>
+              <h3 className="font-black text-xl md:text-2xl text-black uppercase">MẬT THƯ CẦU CỨU</h3>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+              <div className="bg-[#FFFF00] p-4 rounded-2xl border-2 border-black">
+                <p className="font-bold text-lg md:text-xl text-black leading-relaxed">
+                  "Tớ đã đun sôi sữa, và cẩn thận đổ hộp sữa chua mồi vào <span className="text-[#FF0000] underline decoration-wavy font-black">NGAY LÚC SỮA ĐANG SÔI</span>. Tớ ủ ấm 8 tiếng, nhưng sữa vẫn lỏng như nước! Tại sao vậy? 😭"
+                </p>
+              </div>
+
+              <div className="p-4 bg-[#0000FF] border-2 border-black rounded-2xl text-white shadow-inner">
+                <h4 className="font-black text-lg uppercase mb-2 text-[#FFFF00]">🔥 NHIỆM VỤ NHÓM:</h4>
+                <p className="font-bold text-base md:text-lg leading-relaxed">
+                  Hãy giải thích vì sao bạn ấy thất bại và làm cách nào để cứu mẻ sữa này?
+                </p>
+              </div>
             </div>
           </div>
-          <p className="text-sm md:text-base text-science-dark/70 max-w-3xl leading-relaxed mt-2">
-            Học đi đôi với hành! Các em hãy cùng chia nhóm thảo luận để giải cứu một mẻ sữa chua bị bỏ quên không ủ ấm. Bật đồng hồ đếm ngược 5 phút và bắt đầu tranh luận nhanh nhất nào.
-          </p>
+
+          {/* Action Buttons Row */}
+          <div className="flex-none flex flex-col sm:flex-row gap-4">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => { setShowHint(true); fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd4' }) }).catch(console.error); }}
+              className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-xl uppercase border-4 border-black bg-[#00E5FF] text-black shadow-[6px_6px_0px_0px_#000000]"
+            >
+              <HelpCircle className="w-6 h-6" /> MỞ GỢI Ý
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => { setShowAnswer(true); fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd4' }) }).catch(console.error); }}
+              className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-xl uppercase border-4 border-black bg-[#FF00FF] text-white shadow-[6px_6px_0px_0px_#000000]"
+            >
+              <Eye className="w-6 h-6" /> XEM ĐÁP ÁN
+            </motion.button>
+          </div>
         </div>
 
-        {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Left Column: Problem Case Card (7 cols) */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="bg-white border border-science-dark/20 rounded-none p-6 sm:p-8 space-y-6 shadow-none">
-              
-              {/* Scenario Label Badge — score removed */}
-              <div className="flex items-center">
-                <span className="inline-flex items-center px-2.5 py-1 rounded-none bg-science-base text-white text-[9px] font-mono font-bold uppercase tracking-wider">
-                  🔥 TÌNH HUỐNG THẢO LUẬN LỚP 5
-                </span>
-              </div>
-
-              {/* The Case content — new content */}
-              <div className="space-y-4">
-                <h3 className="font-sans font-bold text-lg md:text-xl text-science-dark leading-snug">
-                  Đề: &ldquo;Một bạn đã thực hiện làm sữa chua ở nhà như sau: Đun sôi sữa, cho sữa chua vào khi sữa đang sôi, ủ ở nhiệt độ khoảng từ 40 °C đến 50 °C trong 8 giờ. Sau khi ủ, sữa đã không tạo thành sữa chua.&rdquo;
-                </h3>
-
-                <div className="p-5 bg-science-bg border-2 border-science-dark rounded-none text-xs leading-relaxed text-science-dark space-y-3">
-                  <div className="font-mono font-bold uppercase tracking-wide">❓ CÂU HỎI:</div>
-                  <p className="leading-relaxed">
-                    Em hãy giải thích vì sao bạn làm sữa chua không thành công và đề xuất phương án để giải cứu mẻ sữa chua này
-                  </p>
-                </div>
-              </div>
-
-              {/* Buttons controls for Hint and Answer */}
-              <div className="flex flex-wrap gap-3 pt-2">
-                <button
-                  onClick={() => {
-                    setShowHint(!showHint);
-                    fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd4' }) }).catch(console.error);
-                  }}
-                  className={`inline-flex items-center space-x-2 px-4 py-2.5 rounded-none text-[10px] font-mono font-bold uppercase tracking-widest transition-all cursor-pointer ${
-                    showHint 
-                      ? 'bg-science-base text-white border border-science-dark' 
-                      : 'bg-white text-science-dark border border-science-dark hover:bg-neutral-100'
-                  }`}
-                >
-                  <HelpCircle className="w-4 h-4" />
-                  <span>{showHint ? 'ẨN GỢI Ý' : 'XEM GỢI Ý'}</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setShowAnswer(!showAnswer);
-                    fetch('/api/progress', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ stepKey: 'hd4' }) }).catch(console.error);
-                  }}
-                  className={`inline-flex items-center space-x-2 px-4 py-2.5 rounded-none text-[10px] font-mono font-bold uppercase tracking-widest transition-all cursor-pointer ${
-                    showAnswer 
-                      ? 'bg-science-base text-white border border-science-dark' 
-                      : 'bg-science-base text-white hover:bg-neutral-800'
-                  }`}
-                >
-                  {showAnswer ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  <span>{showAnswer ? 'ẨN ĐÁP ÁN' : 'BẬT XEM ĐÁP ÁN'}</span>
-                </button>
-              </div>
-
-              {/* Animated Hints Panel — new content */}
-              <AnimatePresence>
-                {showHint && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-5 rounded-none bg-science-bg border border-science-dark text-xs space-y-2.5">
-                      <h4 className="font-mono font-bold text-science-dark uppercase tracking-wider flex items-center text-[10px]">
-                        <BookOpen className="w-4 h-4 mr-1.5 text-science-dark" /> GỢI Ý:
-                      </h4>
-                      <ul className="list-none space-y-2 text-science-dark/70 text-[11px]">
-                        <li className="flex items-start">
-                          <span className="text-science-dark font-mono mr-1.5 font-bold">-</span>
-                          <span>Bạn nhỏ đã vội vàng ở bước nào?</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-science-dark font-mono mr-1.5 font-bold">-</span>
-                          <span>Vi khuẩn lactic gặp sữa đang sôi sẽ ra sao? (Nhớ lại nhiệt độ sống của chúng ở HĐ3 nhé)</span>
-                        </li>
-                        <li className="flex items-start">
-                          <span className="text-science-dark font-mono mr-1.5 font-bold">-</span>
-                          <span>Làm sao để đưa &ldquo;đội quân&rdquo; vi khuẩn mới vào bình sữa?</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              {/* Animated Answer Panel — new content */}
-              <AnimatePresence>
-                {showAnswer && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-5 rounded-none bg-[#111111] text-white border border-science-dark text-xs space-y-3.5">
-                      <h4 className="font-mono font-bold uppercase tracking-widest flex items-center text-[10px] text-white">
-                        ⚡ ĐÁP ÁN:
-                      </h4>
-                      <p className="leading-relaxed font-mono text-[10px] uppercase tracking-wider text-white">
-                        NGUYÊN NHÂN:
-                      </p>
-                      <ul className="list-disc list-inside space-y-2 text-[#D9D9D9] text-[11px]">
-                        <li>Cho men mồi vào khi sữa đang sôi làm chết toàn bộ vi khuẩn lactic.</li>
-                        <li>Vi khuẩn này chỉ hoạt động tốt ở nhiệt độ ấm từ 30°C đến 50°C. Không còn vi khuẩn thì sữa không thể lên men.</li>
-                      </ul>
-                      <p className="leading-relaxed font-mono text-[10px] uppercase tracking-wider text-white">
-                        GIẢI PHÁP
-                      </p>
-                      <ul className="list-none space-y-2 bg-transparent p-4 rounded-none border border-[#444444] text-[#D9D9D9] text-[11px]">
-                        <li><strong>Bước 1:</strong> Đợi bình sữa nguội xuống mức ấm nhẹ (khoảng 40°C - 45°C).</li>
-                        <li><strong>Bước 2:</strong> Khuấy thêm một hộp sữa chua mồi mới để bổ sung &ldquo;đội quân&rdquo; vi khuẩn khỏe mạnh.</li>
-                        <li><strong>Bước 3:</strong> Đổ ra hũ và ủ ấm lại từ 6 - 8 giờ. Sữa chắc chắn sẽ đông đặc mịn!</li>
-                      </ul>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-            </div>
+        {/* Right Column: Timer (40%) */}
+        <div className="w-full md:w-[40%] bg-[#FFFF00] border-4 border-black rounded-3xl p-6 shadow-[8px_8px_0px_0px_#000000] flex flex-col justify-center items-center text-center">
+          <div className="w-16 h-16 bg-[#FF0000] rounded-full border-4 border-black flex items-center justify-center animate-bounce mb-4">
+            <AlarmClock className="w-8 h-8 text-white" />
           </div>
 
-          {/* Right Column: Countdown Timer only (5 cols) — Kolb box removed */}
-          <div className="lg:col-span-5 bg-white border border-science-dark/20 rounded-none p-6 sm:p-8 flex flex-col justify-center space-y-6">
-            
-            {/* Timer Screen Visual container */}
-            <div className="space-y-4">
-              <div className="border-b border-science-dark/20 pb-3 text-center">
-                <h3 className="font-mono text-xs font-bold text-science-dark uppercase tracking-widest">
-                  ⏰ ĐỒNG HỒ ĐẾM NGƯỢC THẢO LUẬN
-                </h3>
-                <p className="text-[10px] text-science-dark/70 mt-1">Canh giờ thảo luận của các nhóm thi đua với nhau:</p>
-              </div>
+          <h3 className="font-black text-xl md:text-2xl text-black mb-6 uppercase">ĐỒNG HỒ ĐẾM NGƯỢC</h3>
 
-              {/* Huge Timer Screen look */}
-              <div className="p-8 bg-science-base text-white rounded-none border border-science-dark flex flex-col items-center justify-center space-y-3 relative overflow-hidden">
-                
-                {/* Simulated Digital LED screen backdrop grids */}
-                <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#FFF_1px,transparent_1px)] [background-size:12px_12px]" />
-                
-                <span className="font-mono text-5xl sm:text-6xl md:text-7xl font-bold tracking-widest tabular-nums relative z-10 select-none">
-                  {formatTime(timeLeft)}
-                </span>
-
-                {/* Progress bar */}
-                <div className="w-full bg-[#111111] h-1 rounded-none overflow-hidden relative z-10 border border-neutral-800">
-                  <div 
-                    className="h-full bg-white transition-all duration-1000"
-                    style={{ width: `${(timeLeft / 300) * 100}%` }}
-                  />
-                </div>
-
-                <span className="font-mono text-[9px] uppercase tracking-widest text-[#A3A3A3] relative z-10">
-                  {timeLeft === 0 ? '🚫 Hết giờ thảo luận!' : timerRunning ? '⚡ ĐỒNG HỒ ĐANG CHẠY' : '⏸️ ĐANG TẠM DỪNG'}
-                </span>
-              </div>
-
-              {/* Timer Control panel */}
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <button
-                  onClick={handleStartPause}
-                  className={`py-3 px-4 rounded-none text-[10px] font-mono font-bold uppercase tracking-widest flex items-center justify-center space-x-2 transition-all cursor-pointer ${
-                    timerRunning
-                      ? 'bg-[#B00020] text-white'
-                      : 'bg-science-base text-white hover:bg-neutral-800'
-                  }`}
-                >
-                  {timerRunning ? (
-                    <>
-                      <Pause className="w-4 h-4" />
-                      <span>TẠM DỪNG</span>
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-4 h-4 text-white" />
-                      <span>BẮT ĐẦU ĐẾM</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={handleReset}
-                  className="py-3 px-4 bg-white text-science-dark border border-science-dark text-[10px] font-mono font-bold uppercase tracking-widest hover:bg-[#F2F2F2] flex items-center justify-center space-x-2 transition-all cursor-pointer"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>ĐẶT LẠI 5:00</span>
-                </button>
-              </div>
+          <motion.div 
+            animate={isDanger ? { rotate: [-2, 2, -2, 2, 0], scale: [1, 1.02, 1] } : {}}
+            transition={isDanger ? { repeat: Infinity, duration: 0.3 } : {}}
+            className={`py-6 w-full rounded-3xl border-4 mb-6 transition-colors duration-500 shadow-inner flex justify-center items-center ${
+              isZero ? 'bg-gray-300 border-gray-500 text-gray-500' : isDanger ? 'bg-[#FF0000] border-black text-white' : 'bg-black border-gray-800 text-[#00FF00]'
+            }`}
+          >
+            <div className="font-display font-black text-6xl md:text-7xl tracking-tighter leading-none drop-shadow-xl">
+              {formatTime(timeLeft)}
             </div>
+          </motion.div>
 
+          <div className="w-full flex flex-col gap-3">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleStartPause}
+              disabled={isZero}
+              className={`w-full py-4 rounded-2xl font-black text-xl uppercase border-4 shadow-lg flex items-center justify-center gap-2 transition-colors ${
+                isZero ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed' : timerRunning ? 'bg-[#FF00FF] text-white border-black' : 'bg-[#00FF00] text-black border-black'
+              }`}
+            >
+              {timerRunning ? <><Pause className="w-6 h-6" /> TẠM DỪNG</> : <><Play className="w-6 h-6" /> BẮT ĐẦU</>}
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleReset}
+              className="w-full py-3 rounded-2xl font-bold text-base text-white bg-black border-2 border-gray-700 hover:bg-gray-800 uppercase flex items-center justify-center gap-2 transition-colors"
+            >
+              <RotateCcw className="w-5 h-5" /> LÀM LẠI 5 PHÚT
+            </motion.button>
           </div>
-
         </div>
 
       </div>
+
+      {/* ── POPUP: HINT ── */}
+      <AnimatePresence>
+        {showHint && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={() => setShowHint(false)}
+          >
+            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              className="bg-white border-4 border-black rounded-3xl p-6 max-w-2xl w-full shadow-[12px_12px_0px_0px_#00E5FF] relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button onClick={() => setShowHint(false)} className="absolute -top-4 -right-4 bg-red-600 text-white p-2 rounded-full border-2 border-black hover:bg-red-500">
+                <X className="w-6 h-6" />
+              </button>
+              
+              <h4 className="font-black text-2xl md:text-3xl text-black flex items-center gap-3 uppercase mb-6 border-b-2 border-gray-200 pb-3">
+                <BookOpen className="w-8 h-8 text-[#00E5FF]" /> TÚI GỢI Ý
+              </h4>
+              <ul className="space-y-4 text-black font-bold text-lg md:text-xl">
+                <li className="flex items-start gap-3">
+                  <span className="text-[#FF00FF] text-2xl">👉</span> Vi khuẩn lactic sẽ ra sao nếu nhảy vào nồi nước sôi sùng sục?
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-[#FF00FF] text-2xl">👉</span> Bạn nên đợi sữa nguội đến nhiệt độ nào rồi mới đưa "quân cứu viện" vào?
+                </li>
+              </ul>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── POPUP: ANSWER ── */}
+      <AnimatePresence>
+        {showAnswer && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={() => setShowAnswer(false)}
+          >
+            <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
+              className="bg-[#FFFF00] border-4 border-black rounded-3xl p-6 max-w-3xl w-full shadow-[12px_12px_0px_0px_#FF0000] relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button onClick={() => setShowAnswer(false)} className="absolute -top-4 -right-4 bg-red-600 text-white p-2 rounded-full border-2 border-black hover:bg-red-500">
+                <X className="w-6 h-6" />
+              </button>
+
+              <h4 className="font-black text-black flex items-center gap-3 text-2xl md:text-3xl uppercase mb-6 border-b-2 border-black pb-3">
+                <Zap className="w-8 h-8 text-[#FF0000]" /> ĐÁP ÁN BÍ MẬT
+              </h4>
+              
+              <div className="space-y-4">
+                <div className="bg-white p-4 sm:p-6 rounded-2xl border-2 border-black shadow-inner">
+                  <h5 className="font-black text-xl text-[#FF0000] mb-2">🕵️ NGUYÊN NHÂN:</h5>
+                  <p className="text-black font-bold text-lg leading-relaxed">
+                    Nước sôi đã làm <span className="font-black">chết bỏng</span> toàn bộ vi khuẩn lactic! Chúng chỉ sống được ở mức ấm (30°C - 50°C).
+                  </p>
+                </div>
+                  
+                <div className="bg-white p-4 sm:p-6 rounded-2xl border-2 border-black shadow-inner">
+                  <h5 className="font-black text-xl text-[#00AA00] mb-2">🚑 CÁCH GIẢI CỨU:</h5>
+                  <ul className="text-black font-bold text-lg space-y-2">
+                    <li className="flex items-center gap-2"><span>1️⃣</span> Đợi bình sữa nguội bớt (như nước tắm em bé).</li>
+                    <li className="flex items-center gap-2"><span>2️⃣</span> Đổ 1 hộp sữa chua mồi MỚI vào.</li>
+                    <li className="flex items-center gap-2"><span>3️⃣</span> Ủ ấm lại 6 - 8 giờ là xong!</li>
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 }

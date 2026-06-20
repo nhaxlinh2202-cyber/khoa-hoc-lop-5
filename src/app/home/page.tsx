@@ -2,114 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'motion/react';
-import {
-  Flame,
-  Eye,
-  Search,
-  HelpCircle,
-  Trophy,
-  BookOpenCheck,
-  ArrowRight,
-  Sparkles,
-  RefreshCw,
-  ClipboardList,
-  Star,
-  Award,
-  Gamepad2,
-  User,
-  Activity,
-  ChevronRight,
-  BookOpen,
-  Lock,
-} from 'lucide-react';
-import { DiaryEntry } from '../../types';
+import { motion } from 'motion/react';
+import { LogOut, Play, Lock, Trophy, Star, Sparkles } from 'lucide-react';
 
 const steps = [
-  {
-    step: 'Bước 01',
-    progressKey: 'hd1',
-    name: 'Tự làm sữa chua tại nhà',
-    subtitle: 'HĐ1 — Trải nghiệm',
-    desc: 'Xem video hướng dẫn làm sữa chua từ thùng xốp và ghi chép nhật ký ủ ấm cùng gia đình.',
-    path: '/activity/hd1',
-    icon: Flame,
-    color: 'orange',
-    bgHover: 'hover:bg-orange-50/70 hover:border-orange-400 hover:shadow-[0_8px_30px_rgba(249,115,22,0.05)]',
-    iconColor: 'text-orange-500 group-hover:text-orange-600',
-    borderColor: 'border-orange-100',
-  },
-  {
-    step: 'Bước 02',
-    progressKey: 'hd2',
-    name: 'Nhận xét & Đánh giá',
-    subtitle: 'HĐ2 — Phản ngẫm',
-    desc: 'Đóng vai chuyên gia ẩm thực nhí chấm điểm chéo các hũ sữa chua bằng Rubric sao sinh động.',
-    path: '/activity/hd2',
-    icon: Eye,
-    color: 'violet',
-    bgHover: 'hover:bg-violet-50/70 hover:border-violet-400 hover:shadow-[0_8px_30px_rgba(139,92,246,0.05)]',
-    iconColor: 'text-violet-500 group-hover:text-violet-600',
-    borderColor: 'border-violet-100',
-  },
-  {
-    step: 'Bước 03',
-    progressKey: 'hd3',
-    name: 'Khám phá kính hiển vi',
-    subtitle: 'HĐ3 — Lý thuyết',
-    desc: 'Soi tiêu bản kính hiển vi ảo 3D sinh động để quan sát trực khuẩn Lactic dưới góc nhìn khoa học.',
-    path: '/activity/hd3',
-    icon: Search,
-    color: 'teal',
-    bgHover: 'hover:bg-teal-50/70 hover:border-teal-400 hover:shadow-[0_8px_30px_rgba(20,184,166,0.05)]',
-    iconColor: 'text-teal-500 group-hover:text-teal-600',
-    borderColor: 'border-teal-100',
-  },
-  {
-    step: 'Bước 04',
-    progressKey: 'Giải cứu sữa chua hỏng',
-    progressKeyReal: 'hd4',
-    name: 'Giải cứu sữa chua',
-    subtitle: 'HĐ4 — Vận dụng',
-    desc: 'Thảo luận xử lý các tình huống thực tế khi ủ ấm sữa chua bị lạnh lỏng lẻo hay tách nước.',
-    path: '/activity/hd4',
-    icon: HelpCircle,
-    color: 'amber',
-    bgHover: 'hover:bg-amber-50/70 hover:border-amber-400 hover:shadow-[0_8px_30px_rgba(245,158,11,0.05)]',
-    iconColor: 'text-amber-500 group-hover:text-amber-600',
-    borderColor: 'border-amber-100',
-  },
-  {
-    step: 'Bước 05',
-    progressKey: 'assessment',
-    name: 'Củng cố & Wayground!',
-    subtitle: 'HĐ5 — Củng cố',
-    desc: 'Trả lời các câu hỏi mở rộng thực tiễn và tham gia minigame Wayground sôi động cùng cả lớp.',
-    path: '/activity/assessment',
-    icon: BookOpenCheck,
-    color: 'emerald',
-    bgHover: 'hover:bg-emerald-50/70 hover:border-emerald-400 hover:shadow-[0_8px_30px_rgba(16,185,129,0.05)]',
-    iconColor: 'text-emerald-500 group-hover:text-emerald-600',
-    borderColor: 'border-emerald-100',
-  },
+  { id: 'hd1', progressKey: 'hd1', name: 'BÀI 1: LÀM SỮA CHUA 🥣', path: '/activity/hd1', color: 'bg-[#FF0000]', emoji: '🥛' },
+  { id: 'hd2', progressKey: 'hd2', name: 'BÀI 2: CHẤM ĐIỂM ⭐', path: '/activity/hd2', color: 'bg-[#FF00FF]', emoji: '🏅' },
+  { id: 'hd3', progressKey: 'hd3', name: 'BÀI 3: SOI VI KHUẨN 🔬', path: '/activity/hd3', color: 'bg-[#00FF00]', emoji: '🦠' },
+  { id: 'hd4', progressKey: 'hd4', name: 'BÀI 4: CỨU HỘ 🚑', path: '/activity/hd4', color: 'bg-[#FF8C00]', emoji: '💡' },
+  { id: 'assessment', progressKey: 'assessment', name: 'ÔN TẬP: TRÒ CHƠI 🎮', path: '/activity/assessment', color: 'bg-[#00E5FF]', emoji: '🎯' },
 ];
 
 export default function HomePage() {
   const router = useRouter();
   
-  /* ── State variables ── */
   const [isTeacher, setIsTeacher] = useState(false);
-  const [studentName, setStudentName] = useState('Nhà khoa học nhí');
+  const [studentName, setStudentName] = useState('Bé Yêu');
   const [progress, setProgress] = useState<Record<string, boolean>>({
-    hd1: false,
-    hd2: false,
-    hd3: false,
-    hd4: false,
-    assessment: false,
+    hd1: false, hd2: false, hd3: false, hd4: false, assessment: false,
   });
   const [loading, setLoading] = useState(true);
 
-  /* Load stats from API */
   useEffect(() => {
     async function loadData() {
       try {
@@ -122,15 +35,9 @@ export default function HomePage() {
           const meData = await meRes.json();
           if (meData.authenticated) {
             setIsTeacher(meData.user.role === 'teacher');
-            if (meData.user.role === 'student') {
-              setStudentName(meData.user.name);
-            }
-          } else {
-            router.push('/');
-          }
-        } else {
-          router.push('/');
-        }
+            if (meData.user.role === 'student') setStudentName(meData.user.name);
+          } else router.push('/');
+        } else router.push('/');
 
         if (progressRes.ok) {
           const pData = await progressRes.json();
@@ -155,8 +62,7 @@ export default function HomePage() {
   }, [router]);
 
   const completedCount = Object.values(progress).filter(Boolean).length;
-  const totalStepsCount = steps.length;
-  const percentage = Math.round((completedCount / totalStepsCount) * 100);
+  const percentage = Math.round((completedCount / steps.length) * 100);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
@@ -167,198 +73,120 @@ export default function HomePage() {
   if (loading) return null;
 
   return (
-    <div className="min-h-screen flex flex-col bg-science-bg font-sans text-science-dark antialiased selection:bg-science-accent selection:text-science-dark">
-      {/* ── Compact Header ── */}
-      <header className="shrink-0 border-b border-science-dark/20 bg-white/95 backdrop-blur-md z-10 sticky top-0">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <span className="font-display font-bold text-lg tracking-tighter text-science-dark">
-              SCIENCE.05
-            </span>
-            <div className="hidden sm:block h-4 w-px bg-science-dark/20" />
-            <span className="hidden sm:block font-mono text-[9px] text-[#444444] tracking-widest uppercase">
-              Chuyên Đề Vi Khuẩn Lactic
-            </span>
+    <div className="min-h-screen w-full bg-[#FFFF00] font-display flex flex-col p-4 md:p-6 gap-4">
+      
+      {/* HEADER */}
+      <header className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-[#FF0000] border-2 border-black flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-white animate-pulse" />
           </div>
-
-          <div className="flex items-center space-x-3">
-            <span className="font-mono text-[9px] px-3 py-1 border border-science-dark rounded-full font-bold tracking-widest bg-white uppercase text-science-dark">
-              KHOA HỌC LỚP 5
-            </span>
-            <button
-              onClick={handleLogout}
-              className="px-3 py-1 border border-dashed border-[#B00020] hover:bg-red-50 text-[#B00020] text-[9.5px] font-mono font-bold uppercase tracking-wider transition-colors cursor-pointer"
-            >
-              Đăng xuất
-            </button>
-          </div>
+          <span className="font-black text-2xl md:text-3xl text-black uppercase tracking-tight">KHOA HỌC 5</span>
         </div>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleLogout}
+          className="px-4 py-2 bg-black text-white font-black text-sm md:text-base uppercase rounded-xl flex items-center gap-2 border-2 border-black"
+        >
+          THOÁT <LogOut className="w-4 h-4" />
+        </motion.button>
       </header>
 
-      {/* ── Main Area ── */}
-      <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
-        {/* ── Portal Banner ── */}
-        <section className="bg-white border-2 border-science-dark p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative" style={{ boxShadow: '8px 8px 0px 0px var(--color-science-dark)' }}>
-          <div className="space-y-3 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start space-x-2">
-              <div className="p-1.5 bg-science-base text-white shrink-0">
-                <User className="w-4 h-4" />
-              </div>
-              <span className="font-mono text-xs uppercase tracking-widest text-science-dark/60 font-bold">
-                CỔNG THÔNG TIN HỌC SINH
-              </span>
-            </div>
-            
-            <h1 className="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase tracking-tight leading-none text-science-dark">
-              Chào mừng, <span className="underline decoration-science-base decoration-4 underline-offset-4">{studentName}</span>!
+      <main className="flex-1 flex flex-col gap-4">
+        
+        {/* WELCOME BANNER */}
+        <section className="flex-none bg-[#00E5FF] rounded-[2rem] p-6 border-4 border-black shadow-[8px_8px_0px_0px_#FF00FF] flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-2xl opacity-30 -mr-10 -mt-10 pointer-events-none" />
+          
+          <div className="w-24 h-24 bg-white border-4 border-black rounded-full flex items-center justify-center shadow-inner shrink-0 z-10">
+            <span className="text-5xl drop-shadow-md">🚀</span>
+          </div>
+
+          <div className="flex-1 z-10 space-y-3 text-center md:text-left w-full">
+            <h1 className="font-black text-3xl md:text-4xl text-black uppercase">
+              CHÀO BẠN, <span className="text-[#FF0000]">{studentName}!</span>
             </h1>
-            <p className="text-xs sm:text-sm text-science-dark/80 max-w-xl">
-              Chào mừng em đến với hành trình nghiên cứu khoa học thú vị về vi khuẩn Lactic. Hãy tham gia đầy đủ 5 chặng học tập dưới đây để tích lũy kiến thức thực tiễn và hoàn tất báo cáo khoa học của riêng mình nhé!
-            </p>
-          </div>
-
-          {/* Progress dashboard circle/bar */}
-          <div className="w-full md:w-auto shrink-0 bg-science-bg border border-science-dark/20 p-5 space-y-4 max-w-sm">
-            <div className="flex justify-between items-center text-[10px] font-mono font-bold text-science-dark/60">
-              <span>TIẾN ĐỘ HÀNH TRÌNH</span>
-              <span className="text-science-dark">{completedCount} / {totalStepsCount} CHẶNG ({percentage}%)</span>
-            </div>
-
-            <div className="w-full sm:w-64 bg-white h-3 border border-science-dark overflow-hidden relative">
-              <div
-                className="h-full bg-science-base transition-all duration-700 ease-out"
-                style={{ width: `${percentage}%` }}
-              />
-            </div>
-
-            <div className="flex justify-between items-center pt-1">
-              <span className="text-[9px] font-mono text-[#888888]">
-                {percentage === 100 ? '🎉 Xuất sắc! Em đã hoàn thành' : '⚡ Cố gắng lên con nhé!'}
-              </span>
+            
+            <div className="bg-white border-2 border-black rounded-full p-1.5 relative h-10 w-full max-w-xl mx-auto md:mx-0 shadow-inner">
+              <div 
+                className="h-full bg-[#00FF00] border-r-2 border-black rounded-full transition-all duration-1000 flex items-center justify-end px-2"
+                style={{ width: `${Math.max(percentage, 10)}%` }}
+              >
+                <div className="bg-white border-2 border-black rounded-full p-0.5">
+                  <Trophy className="w-4 h-4 text-black" />
+                </div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center font-black text-sm md:text-base text-black mix-blend-overlay pointer-events-none uppercase">
+                ĐÃ HỌC: {completedCount} / {steps.length} BÀI
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ── Timeline Grid (Hành trình học tập) ── */}
-        <section className="space-y-6">
-          <div className="flex items-center space-x-2 border-b border-science-dark/20 pb-4">
-            <Activity className="w-5 h-5 text-science-dark" />
-            <h2 className="font-sans font-bold text-lg sm:text-xl uppercase tracking-tight text-science-dark">
-              HÀNH TRÌNH HỌC TẬP (5 BƯỚC KHÉP KÍN)
-            </h2>
-          </div>
+        {/* ACTIVITY CARDS */}
+        <section className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {steps.map((item) => {
+            const isCompleted = progress[item.progressKey];
+            const lockedPaths = ['/activity/hd2', '/activity/hd3', '/activity/hd4'];
+            const isLocked = lockedPaths.includes(item.path) && !isTeacher;
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {steps.map((item, index) => {
-              const Icon = item.icon;
-              // Map progress key
-              const progressKey = item.progressKeyReal || item.progressKey;
-              const isCompleted = progress[progressKey];
-              
-              // Lock HĐ2, HĐ3, HĐ4 if not Teacher
-              const lockedPaths = ['/activity/hd2', '/activity/hd3', '/activity/hd4'];
-              const isLocked = lockedPaths.includes(item.path) && !isTeacher;
-
-              let cardBorderClass = 'border-science-dark/20 hover:border-science-dark';
-              let shadowClass = '';
-              let cursorClass = 'cursor-pointer hover:shadow-[4px_4px_0px_0px_var(--color-science-dark)]';
-              
-              if (isCompleted && !isLocked) {
-                cardBorderClass = 'border-science-dark';
-                shadowClass = 'shadow-[4px_4px_0px_0px_var(--color-science-base)]'; // Brutalist emerald shadow for completed
-              } else if (isLocked) {
-                cardBorderClass = 'border-neutral-200 opacity-60 bg-neutral-50/50';
-                cursorClass = 'cursor-not-allowed select-none';
-              }
-
-              const CardIcon = isLocked ? Lock : Icon;
-
-              return (
-                <motion.div
-                  key={item.path}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  className={`group relative bg-white border-2 rounded-none p-6 flex flex-col justify-between transition-all duration-300 ${cardBorderClass} ${shadowClass} ${item.bgHover} ${cursorClass}`}
-                  onClick={() => {
-                    if (isLocked) {
-                      alert("Hoạt động này tạm khóa. Chỉ Giáo viên mới có quyền mở khóa trình chiếu tại lớp học!");
-                      return;
-                    }
-                    router.push(item.path);
-                  }}
-                >
-                  <div>
-                    {/* Top line: step number + completion/lock badge */}
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="space-y-1">
-                        <span className="font-mono text-[10px] font-bold text-[#AAAAAA] uppercase tracking-wider block">
-                          {item.step}
-                        </span>
-                        
-                        {isLocked ? (
-                          <span className="inline-block text-[8px] font-mono font-bold uppercase tracking-wider text-amber-700 bg-amber-50 border border-amber-300 px-1.5 py-0.5">
-                            🔒 Chỉ tại lớp học
-                          </span>
-                        ) : isCompleted ? (
-                          <span className="inline-block text-[8px] font-mono font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-300 px-1.5 py-0.5">
-                            ✓ Đã hoàn thành
-                          </span>
-                        ) : null}
-                      </div>
-
-                      <div className={`p-2 border transition-all duration-300 ${
-                        isLocked
-                          ? 'border-neutral-300 bg-neutral-100 text-neutral-400'
-                          : isCompleted
-                            ? 'bg-science-light text-science-base border-science-base border'
-                            : 'border-science-dark bg-white group-hover:bg-science-base group-hover:border-science-base group-hover:text-white'
-                      }`}>
-                        <CardIcon className="w-5 h-5 text-current" />
-                      </div>
+            return (
+              <motion.div
+                key={item.id}
+                whileHover={!isLocked ? { scale: 1.02, y: -5 } : {}}
+                onClick={() => {
+                  if (isLocked) {
+                    alert("Khoá rồi! 🔒 Cô giáo sẽ mở khóa hoạt động này trên lớp nhé!");
+                    return;
+                  }
+                  router.push(item.path);
+                }}
+                className={`relative rounded-3xl p-4 flex flex-col items-center text-center transition-all cursor-pointer border-4 border-black shadow-[6px_6px_0px_0px_#000000] min-h-[220px]
+                  ${isLocked ? 'bg-gray-400 opacity-80' : `${item.color} text-white`}
+                `}
+              >
+                <div className="absolute top-3 left-3">
+                  {isLocked ? (
+                    <div className="w-8 h-8 bg-black rounded-full border-2 border-white flex items-center justify-center">
+                      <Lock className="w-4 h-4 text-white" />
                     </div>
-
-                    {/* Middle: Content */}
-                    <div className="space-y-1">
-                      <h3 className={`font-sans font-extrabold text-sm uppercase tracking-wider ${isLocked ? 'text-neutral-500' : 'text-science-dark'}`}>
-                        {item.name}
-                      </h3>
-                      <span className="font-mono text-[9px] text-science-dark/50 block uppercase tracking-wider">
-                        {item.subtitle}
-                      </span>
-                      <p className={`text-xs leading-relaxed pt-2 ${isLocked ? 'text-neutral-400' : 'text-[#555555]'}`}>
-                        {item.desc}
-                      </p>
+                  ) : isCompleted ? (
+                    <div className="w-8 h-8 bg-[#FFFF00] rounded-full border-2 border-black flex items-center justify-center shadow-md">
+                      <Star className="w-4 h-4 text-black fill-black" />
                     </div>
-                  </div>
+                  ) : null}
+                </div>
 
-                  {/* Bottom: Action CTA */}
-                  <div className="mt-6 pt-3 border-t border-science-dark/10 flex items-center justify-between group-hover:border-science-dark/30 transition-all">
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-science-dark/40 group-hover:text-science-dark font-bold transition-colors">
-                      {isLocked ? '🔒 Hoạt động bị khóa' : (isCompleted ? 'Xem lại bài học' : 'Bắt đầu học tập')}
-                    </span>
-                    {!isLocked && (
-                      <ArrowRight className="w-3.5 h-3.5 text-science-dark/30 group-hover:text-science-dark transition-all group-hover:translate-x-1" />
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+                <div className="flex-1 flex items-center justify-center mt-6">
+                  <span className="text-6xl drop-shadow-xl">{item.emoji}</span>
+                </div>
+
+                <div className="w-full flex flex-col gap-3 mt-4">
+                  <h3 className={`font-black text-sm lg:text-base uppercase line-clamp-2 ${isLocked ? 'text-gray-800' : 'text-black bg-white/90 rounded-xl p-2 border-2 border-black'}`}>
+                    {item.name}
+                  </h3>
+
+                  <motion.button 
+                    whileTap={!isLocked ? { scale: 0.95 } : {}}
+                    className={`w-full py-2.5 rounded-xl font-black text-sm uppercase border-2 flex items-center justify-center gap-2
+                      ${isLocked 
+                        ? 'bg-gray-500 border-gray-600 text-gray-300 cursor-not-allowed' 
+                        : 'bg-black border-black text-white shadow-md'
+                      }`}
+                  >
+                    {isCompleted ? 'CHƠI LẠI' : 'VÀO HỌC'} 
+                    {!isLocked && <Play className="w-4 h-4 fill-current" />}
+                  </motion.button>
+                </div>
+
+              </motion.div>
+            );
+          })}
         </section>
-
 
       </main>
-
-      {/* ── Compact Footer ── */}
-      <footer className="shrink-0 border-t border-science-dark/20 bg-white z-10 mt-12">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between text-[10px] text-science-dark/60">
-          <span>© {new Date().getFullYear()} Nhóm 4 thực hành • Ha Noi University of Science and Technology</span>
-          <span className="hidden sm:inline font-mono uppercase tracking-widest text-[9px]">
-            Learning by Doing — Học qua trải nghiệm
-          </span>
-        </div>
-      </footer>
     </div>
   );
 }

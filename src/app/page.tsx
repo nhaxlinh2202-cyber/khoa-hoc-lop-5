@@ -1,25 +1,9 @@
 "use client";
 
-/**
- * page.tsx — Split-screen role selector (Student / Teacher).
- * Playful aesthetic: Soft gradients, rounded corners, fun animations.
- */
-
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import {
-  GraduationCap,
-  ShieldCheck,
-  ArrowRight,
-  KeyRound,
-  AlertCircle,
-  Loader2,
-  Sparkles,
-  Star
-} from 'lucide-react';
-
-const TEACHER_PIN = '1234';
+import { GraduationCap, ShieldCheck, ArrowRight, KeyRound, AlertCircle, Loader2, Sparkles, Star } from 'lucide-react';
 
 export default function Gateway() {
   const router = useRouter();
@@ -38,7 +22,6 @@ export default function Gateway() {
   const [studentLoading, setStudentLoading] = useState(false);
   const studentInputRef = useRef<HTMLInputElement>(null);
 
-  /* Focus inputs when forms appear */
   useEffect(() => {
     if (showPinForm && inputRef.current) inputRef.current.focus();
   }, [showPinForm]);
@@ -52,7 +35,7 @@ export default function Gateway() {
     setStudentError('');
 
     if (!studentName.trim()) {
-      setStudentError('Vui lòng nhập họ tên.');
+      setStudentError('CHƯA NHẬP TÊN KÌA BÉ ƠI!');
       return;
     }
 
@@ -67,10 +50,10 @@ export default function Gateway() {
       if (data.success) {
         router.push('/home');
       } else {
-        setStudentError(data.error || 'Lỗi đăng nhập');
+        setStudentError(data.error || 'LỖI ĐĂNG NHẬP!');
       }
     } catch (err) {
-      setStudentError('Lỗi kết nối máy chủ');
+      setStudentError('LỖI KẾT NỐI MẠNG!');
     } finally {
       setStudentLoading(false);
     }
@@ -81,7 +64,7 @@ export default function Gateway() {
     setError('');
 
     if (!pin.trim()) {
-      setError('Vui lòng nhập mã PIN.');
+      setError('CÔ CHƯA NHẬP MÃ PIN!');
       return;
     }
 
@@ -97,77 +80,62 @@ export default function Gateway() {
       if (data.success) {
         router.push('/home');
       } else {
-        setError(data.error || 'Mã PIN không đúng.');
+        setError(data.error || 'MÃ PIN SAI RỒI!');
         setPin('');
         inputRef.current?.focus();
       }
     } catch (err) {
-      setError('Lỗi kết nối máy chủ');
+      setError('LỖI KẾT NỐI MẠNG!');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="h-screen flex flex-col bg-science-bg font-sans text-science-dark antialiased overflow-hidden selection:bg-science-accent selection:text-science-dark">
+    <div className="min-h-screen flex flex-col bg-[#FFFF00] font-sans text-black antialiased p-4 md:p-8 selection:bg-black selection:text-white">
       
       {/* ── Top Bar ── */}
-      <header className="shrink-0 bg-white/80 backdrop-blur-md border-b border-science-base/20 z-10 sticky top-0">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-science-base to-science-accent flex items-center justify-center shadow-md">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <span className="font-display font-bold text-xl tracking-tight text-science-dark">
-              SCIENCE.05
-            </span>
+      <header className="shrink-0 bg-white px-6 py-4 rounded-[2rem] border-4 border-black shadow-[8px_8px_0px_0px_#000000] z-10 flex items-center justify-between mb-8">
+        <div className="flex items-center space-x-3">
+          <div className="w-12 h-12 rounded-full bg-[#FF0000] border-2 border-black flex items-center justify-center animate-pulse">
+            <Sparkles className="w-6 h-6 text-[#FFFF00]" />
           </div>
-          <span className="font-mono text-xs px-4 py-1.5 rounded-full bg-science-light text-science-dark font-bold border border-science-base/30 shadow-sm animate-bounce-in" style={{ animationDelay: '0.5s' }}>
-            BẮT ĐẦU NÀO! 🚀
+          <span className="font-display font-black text-3xl tracking-tighter text-black uppercase">
+            KHOA HỌC LỚP 5
           </span>
         </div>
+        <span className="hidden sm:inline-block font-black text-lg px-6 py-2 rounded-full bg-[#00FF00] border-2 border-black text-black uppercase tracking-widest animate-bounce">
+          VUI LÀ CHÍNH! 🚀
+        </span>
       </header>
 
       {/* ── Split Layout ── */}
-      <main className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 relative">
+      <main className="flex-1 flex flex-col lg:flex-row gap-8">
         
-        {/* Floating background decorations */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center items-center opacity-40">
-          <div className="absolute w-96 h-96 bg-science-base/20 rounded-full blur-3xl -top-20 -left-20 animate-float" />
-          <div className="absolute w-96 h-96 bg-science-accent/20 rounded-full blur-3xl -bottom-20 -right-20 animate-float" style={{ animationDelay: '1.5s' }} />
-        </div>
-
         {/* ═══════════════ LEFT — STUDENT ═══════════════ */}
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
-          className="relative flex flex-col items-center justify-center p-8 sm:p-12 lg:p-16 bg-white/40 backdrop-blur-sm z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex-1 relative flex flex-col items-center justify-center p-8 bg-[#00E5FF] rounded-[3rem] border-4 border-black shadow-[12px_12px_0px_0px_#FF00FF] z-10"
         >
-          <div className="relative z-10 flex flex-col items-center text-center space-y-6 w-full max-w-sm">
-            {/* Fun Icon Container */}
+          <div className="flex flex-col items-center text-center space-y-6 w-full max-w-sm">
+            
             <div className="relative">
-              <div className="absolute -inset-2 bg-gradient-to-tr from-science-base to-science-accent rounded-3xl blur opacity-30 animate-pulse" />
-              <div className="relative p-6 bg-white rounded-3xl shadow-xl shadow-science-base/20 border-2 border-white transform transition-transform hover:scale-105 hover:rotate-3 duration-300">
-                <GraduationCap className="w-14 h-14 text-science-base" />
+              <div className="relative p-6 bg-white rounded-full shadow-[6px_6px_0px_0px_#000000] border-4 border-black transform transition-transform hover:scale-110 hover:rotate-6 duration-300">
+                <GraduationCap className="w-16 h-16 text-[#0000FF]" />
               </div>
-              <Star className="absolute -top-3 -right-3 w-6 h-6 text-science-accent animate-bounce" />
+              <Star className="absolute -top-4 -right-4 w-10 h-10 text-[#FFFF00] fill-[#FFFF00] animate-spin-slow" />
             </div>
 
-            {/* Label */}
-            <div className="space-y-3">
-              <span className="font-display inline-block px-3 py-1 bg-science-base/10 text-science-base rounded-full text-xs font-bold uppercase tracking-wider">
+            <div className="space-y-2">
+              <span className="font-black inline-block px-4 py-1.5 bg-[#FFFF00] border-2 border-black rounded-full text-sm uppercase">
                 Dành cho Học sinh
               </span>
-              <h2 className="font-display font-extrabold text-3xl sm:text-4xl lg:text-5xl tracking-tight text-science-dark drop-shadow-sm">
-                Sẵn sàng khám phá!
+              <h2 className="font-display font-black text-4xl lg:text-5xl text-black uppercase drop-shadow-md">
+                BÉ ĐÃ SẴN SÀNG?
               </h2>
-              <p className="text-base text-science-dark/70 max-w-xs mx-auto leading-relaxed font-medium">
-                Cùng nhau tìm hiểu về vi khuẩn Lactic qua các hoạt động trải nghiệm cực kỳ thú vị nhé.
-              </p>
             </div>
 
-            {/* Form */}
             <AnimatePresence mode="wait">
               {!showStudentForm ? (
                 <motion.button
@@ -178,88 +146,54 @@ export default function Gateway() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center space-x-3 px-8 py-4 bg-gradient-to-r from-science-base to-[#2eb886] text-white
-                             rounded-full text-lg font-display font-bold shadow-lg shadow-science-base/40
-                             hover:shadow-xl hover:shadow-science-base/50 transition-all duration-300 cursor-pointer"
+                  className="w-full inline-flex items-center justify-center space-x-3 px-8 py-5 bg-[#00FF00] text-black border-4 border-black rounded-3xl text-xl font-black uppercase shadow-[6px_6px_0px_0px_#000000] hover:bg-[#00CC00] transition-colors"
                 >
-                  <span>Bắt đầu học ngay</span>
-                  <ArrowRight className="w-5 h-5 bg-white/20 rounded-full p-1" />
+                  <span>BẮT ĐẦU HỌC NÀO!</span>
+                  <ArrowRight className="w-6 h-6" />
                 </motion.button>
               ) : (
                 <motion.form
                   key="student-form"
                   onSubmit={handleStudentSubmit}
-                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                  transition={{ type: 'spring', bounce: 0.4 }}
-                  className="w-full bg-white p-6 rounded-3xl shadow-xl shadow-science-base/10 border border-science-light space-y-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full bg-white p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black space-y-4"
                 >
-                  <div className="space-y-1 text-left">
-                    <label className="text-xs font-bold text-science-dark/60 uppercase pl-2">Tên của em là gì?</label>
-                    <div className="relative">
-                      <input
-                        ref={studentInputRef}
-                        type="text"
-                        value={studentName}
-                        onChange={(e) => {
-                          setStudentName(e.target.value);
-                          if (studentError) setStudentError('');
-                        }}
-                        placeholder="Nhập họ và tên..."
-                        className={`w-full px-5 py-4 bg-science-bg rounded-2xl font-display text-lg
-                                    placeholder:text-science-dark/30
-                                    focus:outline-none focus:ring-4 transition-all
-                                    ${studentError ? 'ring-red-100 border-red-300' : 'ring-science-base/20 border-transparent focus:bg-white'}`}
-                        autoComplete="off"
-                      />
-                    </div>
+                  <div className="space-y-2 text-left">
+                    <label className="text-sm font-black text-black uppercase">TÊN BÉ LÀ GÌ NÀO?</label>
+                    <input
+                      ref={studentInputRef}
+                      type="text"
+                      value={studentName}
+                      onChange={(e) => {
+                        setStudentName(e.target.value);
+                        if (studentError) setStudentError('');
+                      }}
+                      placeholder="Nhập họ và tên bé..."
+                      className={`w-full px-4 py-3 bg-gray-100 rounded-2xl font-black text-lg border-4 focus:outline-none transition-colors
+                        ${studentError ? 'border-red-500 bg-red-50' : 'border-black focus:bg-[#FFFF00]'}`}
+                      autoComplete="off"
+                    />
                   </div>
 
                   <AnimatePresence>
                     {studentError && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="flex items-center justify-center space-x-1.5 text-red-500 bg-red-50 p-2 rounded-xl"
-                      >
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        <span className="text-sm font-display font-bold">{studentError}</span>
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center space-x-2 text-white bg-red-600 border-2 border-black py-2 px-4 rounded-xl">
+                        <AlertCircle className="w-5 h-5" />
+                        <span className="text-sm font-black uppercase">{studentError}</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   <div className="flex space-x-3 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowStudentForm(false);
-                        setStudentName('');
-                        setStudentError('');
-                      }}
-                      className="flex-1 px-4 py-3 bg-gray-50 text-gray-500 rounded-2xl
-                                 text-sm font-display font-bold
-                                 hover:bg-gray-100 transition-all cursor-pointer"
-                    >
-                      Quay lại
+                    <button type="button" onClick={() => { setShowStudentForm(false); setStudentName(''); setStudentError(''); }}
+                      className="flex-1 px-4 py-3 bg-gray-300 text-black border-4 border-black rounded-2xl text-base font-black uppercase hover:bg-gray-400">
+                      HUỶ
                     </button>
-                    <button
-                      type="submit"
-                      disabled={studentLoading}
-                      className="flex-[2] inline-flex items-center justify-center space-x-2 px-4 py-3 bg-science-base text-white rounded-2xl
-                                 text-sm font-display font-bold shadow-md shadow-science-base/30
-                                 hover:bg-[#2eb886] hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer
-                                 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {studentLoading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <>
-                          <span>Vào lớp</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
+                    <button type="submit" disabled={studentLoading}
+                      className="flex-[2] inline-flex items-center justify-center space-x-2 px-4 py-3 bg-[#00FF00] text-black border-4 border-black rounded-2xl text-base font-black uppercase shadow-[4px_4px_0px_0px_#000000] hover:bg-[#00CC00] disabled:opacity-50">
+                      {studentLoading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><span>VÀO LỚP NGAY</span><ArrowRight className="w-5 h-5" /></>}
                     </button>
                   </div>
                 </motion.form>
@@ -270,31 +204,26 @@ export default function Gateway() {
 
         {/* ═══════════════ RIGHT — TEACHER ═══════════════ */}
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, type: 'spring', bounce: 0.4 }}
-          className="relative flex flex-col items-center justify-center p-8 sm:p-12 lg:p-16 bg-science-light/50 backdrop-blur-sm z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="flex-1 relative flex flex-col items-center justify-center p-8 bg-[#FF00FF] rounded-[3rem] border-4 border-black shadow-[12px_12px_0px_0px_#00E5FF] z-10"
         >
-          <div className="relative z-10 flex flex-col items-center text-center space-y-6 w-full max-w-sm">
-            {/* Icon */}
-            <div className="p-6 bg-white rounded-full shadow-lg shadow-science-dark/5 border border-science-base/10">
-              <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-science-dark/70" />
+          <div className="flex flex-col items-center text-center space-y-6 w-full max-w-sm">
+            
+            <div className="relative p-6 bg-white rounded-full shadow-[6px_6px_0px_0px_#000000] border-4 border-black transform transition-transform hover:scale-110 hover:-rotate-6 duration-300">
+              <ShieldCheck className="w-16 h-16 text-[#FF0000]" />
             </div>
 
-            {/* Label */}
-            <div className="space-y-3">
-              <span className="font-display inline-block px-3 py-1 bg-white text-science-dark/60 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm border border-black/5">
+            <div className="space-y-2">
+              <span className="font-black inline-block px-4 py-1.5 bg-white border-2 border-black rounded-full text-sm uppercase">
                 Khu vực Quản lý
               </span>
-              <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-science-dark">
-                Dành cho Giáo viên
+              <h2 className="font-display font-black text-4xl lg:text-5xl text-white uppercase drop-shadow-md">
+                DÀNH CHO GIÁO VIÊN
               </h2>
-              <p className="text-sm text-science-dark/60 max-w-xs mx-auto leading-relaxed font-medium">
-                Theo dõi tiến trình học tập của các em học sinh và quản lý nội dung bài giảng.
-              </p>
             </div>
 
-            {/* PIN toggle / form */}
             <AnimatePresence mode="wait">
               {!showPinForm ? (
                 <motion.button
@@ -305,89 +234,55 @@ export default function Gateway() {
                   exit={{ opacity: 0 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="inline-flex items-center space-x-2 px-6 py-3 bg-white text-science-dark
-                             rounded-full text-sm font-display font-bold shadow-md shadow-black/5 border border-black/5
-                             hover:bg-science-bg transition-all duration-300 cursor-pointer"
+                  className="w-full inline-flex items-center justify-center space-x-3 px-8 py-5 bg-black text-white border-4 border-white rounded-3xl text-xl font-black uppercase shadow-[6px_6px_0px_0px_#FFFFFF] hover:bg-gray-900 transition-colors"
                 >
-                  <KeyRound className="w-4 h-4 text-science-base" />
-                  <span>Nhập mã PIN</span>
+                  <KeyRound className="w-6 h-6" />
+                  <span>NHẬP MÃ PIN</span>
                 </motion.button>
               ) : (
                 <motion.form
                   key="pin-form"
                   onSubmit={handlePinSubmit}
-                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                  transition={{ type: 'spring', bounce: 0.4 }}
-                  className="w-full bg-white p-6 rounded-3xl shadow-xl shadow-black/5 border border-black/5 space-y-4"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="w-full bg-white p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black space-y-4"
                 >
-                  <div className="space-y-1 text-left">
-                    <label className="text-xs font-bold text-science-dark/60 uppercase pl-2">Mã PIN Giáo viên</label>
-                    <div className="relative">
-                      <input
-                        ref={inputRef}
-                        type="password"
-                        value={pin}
-                        onChange={(e) => {
-                          setPin(e.target.value);
-                          if (error) setError('');
-                        }}
-                        placeholder="••••"
-                        maxLength={10}
-                        className={`w-full px-5 py-4 bg-science-bg rounded-2xl font-mono text-center text-xl tracking-[0.5em]
-                                    placeholder:text-science-dark/20 placeholder:tracking-normal
-                                    focus:outline-none focus:ring-4 transition-all
-                                    ${error ? 'ring-red-100 border-red-300' : 'ring-science-dark/10 border-transparent focus:bg-white'}`}
-                        autoComplete="off"
-                      />
-                    </div>
+                  <div className="space-y-2 text-left">
+                    <label className="text-sm font-black text-black uppercase">MÃ BÍ MẬT CỦA CÔ LÀ GÌ?</label>
+                    <input
+                      ref={inputRef}
+                      type="password"
+                      value={pin}
+                      onChange={(e) => {
+                        setPin(e.target.value);
+                        if (error) setError('');
+                      }}
+                      placeholder="••••"
+                      maxLength={10}
+                      className={`w-full px-4 py-3 bg-gray-100 rounded-2xl font-mono font-black text-center text-3xl tracking-[0.5em] border-4 focus:outline-none transition-colors
+                        ${error ? 'border-red-500 bg-red-50' : 'border-black focus:bg-[#FFFF00]'}`}
+                      autoComplete="off"
+                    />
                   </div>
 
                   <AnimatePresence>
                     {error && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="flex items-center justify-center space-x-1.5 text-red-500 bg-red-50 p-2 rounded-xl"
-                      >
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        <span className="text-sm font-display font-bold">{error}</span>
+                      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center justify-center space-x-2 text-white bg-red-600 border-2 border-black py-2 px-4 rounded-xl">
+                        <AlertCircle className="w-5 h-5" />
+                        <span className="text-sm font-black uppercase">{error}</span>
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   <div className="flex space-x-3 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowPinForm(false);
-                        setPin('');
-                        setError('');
-                      }}
-                      className="flex-1 px-4 py-3 bg-gray-50 text-gray-500 rounded-2xl
-                                 text-sm font-display font-bold
-                                 hover:bg-gray-100 transition-all cursor-pointer"
-                    >
-                      Huỷ
+                    <button type="button" onClick={() => { setShowPinForm(false); setPin(''); setError(''); }}
+                      className="flex-1 px-4 py-3 bg-gray-300 text-black border-4 border-black rounded-2xl text-base font-black uppercase hover:bg-gray-400">
+                      HUỶ
                     </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-[2] inline-flex items-center justify-center space-x-2 px-4 py-3 bg-science-dark text-white rounded-2xl
-                                 text-sm font-display font-bold shadow-md shadow-science-dark/20
-                                 hover:bg-black hover:shadow-lg hover:-translate-y-0.5 transition-all cursor-pointer
-                                 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      {loading ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                      ) : (
-                        <>
-                          <span>Xác nhận</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </>
-                      )}
+                    <button type="submit" disabled={loading}
+                      className="flex-[2] inline-flex items-center justify-center space-x-2 px-4 py-3 bg-black text-white border-4 border-black rounded-2xl text-base font-black uppercase shadow-[4px_4px_0px_0px_#FF0000] hover:bg-gray-900 disabled:opacity-50">
+                      {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><span>XÁC NHẬN</span><ArrowRight className="w-5 h-5" /></>}
                     </button>
                   </div>
                 </motion.form>
@@ -397,12 +292,6 @@ export default function Gateway() {
         </motion.div>
       </main>
 
-      {/* ── Bottom Bar ── */}
-      <footer className="shrink-0 bg-white/80 backdrop-blur-md z-10">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center text-xs text-science-dark/50 font-display font-medium">
-          <p>© {new Date().getFullYear()} Nhóm 4 thực hành • Trải nghiệm học tập khoa học thú vị dành cho học sinh Lớp 5 ✨</p>
-        </div>
-      </footer>
     </div>
   );
 }

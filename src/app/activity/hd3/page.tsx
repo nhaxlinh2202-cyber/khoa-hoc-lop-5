@@ -1,7 +1,7 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Microscope, Sparkles, RefreshCcw } from 'lucide-react';
+import { Microscope, Sparkles, RefreshCcw, Map, X, GitMerge } from 'lucide-react';
 import Script from 'next/script';
 
 const QUIZ_QUESTIONS = [
@@ -19,6 +19,15 @@ export default function ActivityThree() {
   const [showResults, setShowResults] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  
+  // Mindmap State
+  const [showMindmap, setShowMindmap] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setShowMindmap(false); };
+    if (showMindmap) document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showMindmap]);
 
   const handleAnswerChange = (index: number, value: string) => {
     const newAnswers = [...quizAnswers];
@@ -43,7 +52,7 @@ export default function ActivityThree() {
   const handleBlankClick = (index: number) => { if (selectedWord) { handleAnswerChange(index, selectedWord); setSelectedWord(null); } else if (quizAnswers[index]) { handleAnswerChange(index, ''); } };
 
   return (
-    <section id="hd3" className="min-h-screen w-full flex flex-col p-4 md:p-6 bg-[#00A300] font-sans">
+    <section id="hd3" className="min-h-screen w-full flex flex-col p-4 md:p-6 bg-[#00A300] font-sans relative">
       <Script src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js" type="module" strategy="lazyOnload" />
 
       {/* HEADER */}
@@ -52,14 +61,24 @@ export default function ActivityThree() {
           <div className="px-4 py-1.5 rounded-full bg-[#00FF00] text-black font-black text-lg uppercase border-2 border-black">
             🦠 Chặng 3 
           </div>
-          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
+          <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase hidden sm:block">
             SOI VI KHUẨN <span className="text-[#FF0000]">LACTIC!</span>
           </h2>
         </div>
+
+        {/* MINDMAP BUTTON */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowMindmap(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-[#FF00FF] text-white border-4 border-black rounded-xl font-black text-sm md:text-base uppercase shadow-[4px_4px_0px_0px_#000000] hover:bg-[#CC00CC]"
+        >
+          <Map className="w-5 h-5 text-[#FFFF00]" /> SƠ ĐỒ TƯ DUY
+        </motion.button>
       </div>
 
       {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0 pb-20">
         
         {/* Left Column: 3D Viewer (40%) */}
         <div className="w-full md:w-[40%] flex flex-col min-h-[300px]">
@@ -192,6 +211,102 @@ export default function ActivityThree() {
         </div>
 
       </div>
+
+      {/* ── MINDMAP MODAL ── */}
+      <AnimatePresence>
+        {showMindmap && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-[#0000FF]/90 backdrop-blur-md" onClick={() => setShowMindmap(false)} />
+            
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }}
+              className="relative w-full max-w-5xl h-[85vh] bg-white rounded-[3rem] border-[6px] border-black shadow-[16px_16px_0px_0px_#FF00FF] z-10 flex flex-col overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header Modal */}
+              <div className="flex-none bg-[#FFFF00] px-6 py-4 flex items-center justify-between border-b-[6px] border-black">
+                <h3 className="font-black text-2xl md:text-3xl text-black flex items-center gap-3 uppercase">
+                  <GitMerge className="w-8 h-8 text-[#FF0000]" /> SƠ ĐỒ TƯ DUY: LÀM SỮA CHUA
+                </h3>
+                <button onClick={() => setShowMindmap(false)} className="bg-white text-black p-2 rounded-full border-4 border-black hover:bg-gray-200">
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              {/* Mindmap Canvas */}
+              <div className="flex-1 overflow-auto p-4 md:p-8 bg-[#00E5FF] relative custom-scrollbar flex items-center justify-center">
+                
+                {/* CSS Grid/Flex based Mindmap */}
+                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 min-w-max pb-8 pt-8">
+                  
+                  {/* CENTRAL NODE */}
+                  <div className="relative z-10 bg-[#FF0000] text-white p-6 rounded-[3rem] border-[6px] border-black shadow-[8px_8px_0px_0px_#000000] max-w-[250px] text-center">
+                    <h2 className="font-black text-3xl uppercase tracking-wider mb-2 drop-shadow-md">SỮA CHUA</h2>
+                    <p className="font-bold text-sm bg-black/20 py-1 px-3 rounded-full">Sản phẩm lên men</p>
+                  </div>
+
+                  {/* BRANCHES CONTAINER */}
+                  <div className="flex flex-col gap-8 md:gap-12 relative">
+                    
+                    {/* Connecting lines for desktop (hidden on mobile for simplicity) */}
+                    <div className="hidden md:block absolute top-1/2 left-[-4rem] w-[4rem] h-[6px] bg-black -translate-y-1/2 z-0"></div>
+                    <div className="hidden md:block absolute top-[15%] bottom-[15%] left-[-4rem] w-[6px] bg-black z-0"></div>
+                    <div className="hidden md:block absolute top-[15%] left-[-4rem] w-[4rem] h-[6px] bg-black z-0"></div>
+                    <div className="hidden md:block absolute bottom-[15%] left-[-4rem] w-[4rem] h-[6px] bg-black z-0"></div>
+
+                    {/* TOP BRANCH: Nguyên liệu */}
+                    <motion.div whileHover={{ scale: 1.05 }} className="relative z-10 flex items-center gap-4">
+                      <div className="hidden md:block w-8 h-[6px] bg-black"></div>
+                      <div className="bg-[#FFFF00] p-4 rounded-3xl border-4 border-black shadow-[6px_6px_0px_0px_#000000] w-[260px]">
+                        <h4 className="font-black text-xl text-black uppercase border-b-4 border-black pb-2 mb-2 flex items-center gap-2">
+                          🥛 NGUYÊN LIỆU
+                        </h4>
+                        <ul className="font-bold text-black text-sm space-y-2">
+                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FF00FF] rounded-full border-2 border-black" />Sữa bò tươi/đặc (Đường)</li>
+                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FF00FF] rounded-full border-2 border-black" />Sữa mồi (Vi khuẩn Lactic)</li>
+                        </ul>
+                      </div>
+                    </motion.div>
+
+                    {/* MIDDLE BRANCH: Quá trình */}
+                    <motion.div whileHover={{ scale: 1.05 }} className="relative z-10 flex items-center gap-4">
+                      <div className="hidden md:block w-8 h-[6px] bg-black"></div>
+                      <div className="bg-[#FF00FF] p-4 rounded-3xl border-4 border-black shadow-[6px_6px_0px_0px_#000000] w-[260px] text-white">
+                        <h4 className="font-black text-xl uppercase border-b-4 border-white pb-2 mb-2 flex items-center gap-2">
+                          🔥 QUÁ TRÌNH Ủ
+                        </h4>
+                        <ul className="font-bold text-sm space-y-2">
+                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FFFF00] rounded-full border-2 border-black" />Nhiệt độ: 40-45°C (Ấm)</li>
+                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FFFF00] rounded-full border-2 border-black" />Thời gian: 6-8 tiếng</li>
+                          <li className="flex items-center gap-2"><div className="w-3 h-3 bg-[#FFFF00] rounded-full border-2 border-black" />Tuyệt đối KHÔNG động đậy</li>
+                        </ul>
+                      </div>
+                    </motion.div>
+
+                    {/* BOTTOM BRANCH: Hiện tượng */}
+                    <motion.div whileHover={{ scale: 1.05 }} className="relative z-10 flex items-center gap-4">
+                      <div className="hidden md:block w-8 h-[6px] bg-black"></div>
+                      <div className="bg-[#00FF00] p-4 rounded-3xl border-4 border-black shadow-[6px_6px_0px_0px_#000000] w-[260px] text-black">
+                        <h4 className="font-black text-xl uppercase border-b-4 border-black pb-2 mb-2 flex items-center gap-2">
+                          🧪 KẾT QUẢ CỦA LÊN MEN
+                        </h4>
+                        <ul className="font-bold text-sm space-y-2">
+                          <li className="flex items-start gap-2 leading-tight"><div className="w-3 h-3 bg-[#0000FF] rounded-full border-2 border-black shrink-0 mt-0.5" />Vi khuẩn Lactic 'ăn' Đường sinh ra Axit</li>
+                          <li className="flex items-start gap-2 leading-tight"><div className="w-3 h-3 bg-[#0000FF] rounded-full border-2 border-black shrink-0 mt-0.5" />Axit làm Protein bị đông tụ (đặc lại)</li>
+                          <li className="flex items-start gap-2 leading-tight"><div className="w-3 h-3 bg-[#0000FF] rounded-full border-2 border-black shrink-0 mt-0.5" />Rất tốt cho hệ tiêu hóa (Lợi khuẩn)</li>
+                        </ul>
+                      </div>
+                    </motion.div>
+
+                  </div>
+                </div>
+
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </section>
   );
 }

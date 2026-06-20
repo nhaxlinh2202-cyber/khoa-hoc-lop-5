@@ -1,17 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&family=Fredoka:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Nunito", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka", "Quicksand", sans-serif;
+  --font-mono: "Quicksand", monospace;
 
-  /* Custom Science Theme Colors */
-  --color-science-base: #22c55e;
-  --color-science-dark: #14532d;
-  --color-science-light: #dcfce7;
-  --color-science-bg: #f0fdf4;
-  --color-science-accent: #facc15;
+  /* Fun & Playful Theme Colors */
+  --color-science-base: #34d399; /* Bright mint green */
+  --color-science-dark: #064e3b; /* Deep emerald */
+  --color-science-light: #ecfdf5; /* Very light mint */
+  --color-science-bg: #f8fafc; /* Soft slate/blueish white */
+  --color-science-accent: #fbbf24; /* Cheerful amber */
+  --color-science-purple: #a78bfa; /* Soft purple */
+  --color-science-pink: #f472b6; /* Soft pink */
 }
 
 body {
@@ -20,7 +22,7 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -29,15 +31,34 @@ body {
   to { height: auto; opacity: 1; }
 }
 
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .animate-fade-in {
-  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .animate-slide-down {
-  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideDown 0.3s ease-out forwards;
 }
 
 .animate-ping-once {
-  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) 1;
+  animation: ping 1s ease-out 1;
 }
 
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}

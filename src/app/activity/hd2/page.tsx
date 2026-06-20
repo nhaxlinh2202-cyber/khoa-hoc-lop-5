@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, CheckCircle, BrainCircuit, X, ImageIcon, Award } from 'lucide-react';
+import { Star, CheckCircle, BrainCircuit, X, ImageIcon, Award, Lightbulb } from 'lucide-react';
 import { RUBRIC_CRITERIA } from '../../../data';
 
 export default function ActivityTwo() {
@@ -16,10 +16,15 @@ export default function ActivityTwo() {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsLightboxOpen(false); };
-    if (isLightboxOpen) document.addEventListener('keydown', handleKeyDown);
+    const handleKeyDown = (e: KeyboardEvent) => { 
+      if (e.key === 'Escape') {
+        setIsLightboxOpen(false);
+        setActiveQuestion(null);
+      }
+    };
+    if (isLightboxOpen || activeQuestion !== null) document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isLightboxOpen]);
+  }, [isLightboxOpen, activeQuestion]);
 
   const reflections = [
     { q: 'Sữa chua và sữa trước khi ủ khác nhau chỗ nào nhỉ?', a: 'Sữa lỏng và ngọt. Còn sữa chua thì đặc quánh, chua ngọt thơm lừng!' },
@@ -46,7 +51,7 @@ export default function ActivityTwo() {
   const verdict = getRubricVerdict(scorePercent);
 
   return (
-    <section id="hd2" className="min-h-screen w-full flex flex-col p-4 md:p-6 bg-[#1E0078] font-sans">
+    <section id="hd2" className="min-h-screen w-full flex flex-col p-4 md:p-6 bg-[#1E0078] font-sans relative">
       
       {/* HEADER */}
       <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
@@ -61,7 +66,7 @@ export default function ActivityTwo() {
       </div>
 
       {/* MAIN CONTENT AREA */}
-      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0">
+      <div className="flex-1 flex flex-col md:flex-row gap-4 min-h-0 pb-20">
         
         {/* Left Column: Rubric Panel (60%) */}
         <div className="w-full md:w-[60%] flex flex-col">
@@ -120,53 +125,36 @@ export default function ActivityTwo() {
         {/* Right Column: Flashcards & Image (40%) */}
         <div className="w-full md:w-[40%] flex flex-col gap-4">
           
-          {/* Flashcards */}
-          <div className="flex-1 bg-[#FF00FF] border-4 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_#00E5FF] flex flex-col">
-            <div className="flex-none flex items-center justify-center mb-3 bg-white rounded-full py-1.5 border-2 border-black shadow-inner">
-              <h3 className="font-black text-lg text-black flex items-center gap-2 uppercase">
+          {/* Flashcards - Made flex-none so it only takes needed space */}
+          <div className="flex-none bg-[#FF00FF] border-4 border-black rounded-3xl p-4 shadow-[8px_8px_0px_0px_#00E5FF] flex flex-col gap-3">
+            <div className="bg-white rounded-full py-1.5 border-2 border-black shadow-inner flex items-center justify-center">
+              <h3 className="font-black text-base md:text-lg text-black flex items-center gap-2 uppercase">
                 <BrainCircuit className="w-5 h-5 text-[#00E5FF]" /> CÂU HỎI THƯỞNG!
               </h3>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-3 pr-1 custom-scrollbar">
-              {reflections.map((ref, idx) => {
-                const isOpen = activeQuestion === idx;
-                return (
-                  <motion.div layout key={idx} className="border-2 border-black rounded-2xl overflow-hidden bg-[#FFFF00] shadow-sm">
-                    <button
-                      onClick={() => setActiveQuestion(isOpen ? null : idx)}
-                      className="w-full text-left p-3 focus:outline-none flex justify-between items-center hover:bg-[#FFE600]"
-                    >
-                      <span className="text-sm font-black text-black leading-tight flex items-center gap-2">
-                        <div className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center shrink-0 text-xs">
-                          {idx + 1}
-                        </div>
-                        {ref.q}
-                      </span>
-                    </button>
-                    <AnimatePresence>
-                      {isOpen && (
-                        <motion.div 
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="px-3 pb-3 font-bold text-black text-sm"
-                        >
-                          <div className="p-3 bg-white rounded-xl border-2 border-black shadow-inner flex gap-2">
-                            <span className="text-xl">💡</span>
-                            <span>{ref.a}</span>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
-                );
-              })}
+            <div className="space-y-2">
+              {reflections.map((ref, idx) => (
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  key={idx}
+                  onClick={() => setActiveQuestion(idx)}
+                  className="w-full text-left p-3 border-2 border-black rounded-xl bg-[#FFFF00] shadow-sm hover:bg-[#FFE600] flex justify-between items-center"
+                >
+                  <span className="text-sm font-black text-black leading-tight flex items-center gap-2">
+                    <div className="w-6 h-6 bg-black text-white rounded-full flex items-center justify-center shrink-0 text-xs">
+                      {idx + 1}
+                    </div>
+                    {ref.q}
+                  </span>
+                </motion.button>
+              ))}
             </div>
           </div>
 
-          {/* Image Showcase */}
-          <div className="flex-none bg-white p-3 rounded-3xl shadow-[8px_8px_0px_0px_#FFFF00] border-4 border-black text-center h-[200px] flex flex-col justify-center relative overflow-hidden group cursor-zoom-in" onClick={() => setIsLightboxOpen(true)}>
+          {/* Image Showcase - Made flex-1 so it grows to fill all remaining vertical space */}
+          <div className="flex-1 bg-white p-3 rounded-3xl shadow-[8px_8px_0px_0px_#FFFF00] border-4 border-black flex flex-col relative overflow-hidden group cursor-zoom-in" onClick={() => setIsLightboxOpen(true)}>
             <img
               src="/models/yogurt_comparison.png"
               alt="So sánh"
@@ -182,6 +170,38 @@ export default function ActivityTwo() {
         </div>
 
       </div>
+
+      {/* ── ANSWER POPUP MODAL ── */}
+      <AnimatePresence>
+        {activeQuestion !== null && (
+          <div className="fixed inset-0 z-[1050] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setActiveQuestion(null)} />
+            
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.8, opacity: 0 }}
+              className="relative w-full max-w-md bg-white rounded-3xl border-4 border-black shadow-[12px_12px_0px_0px_#FF00FF] p-6 z-10 flex flex-col gap-4 text-center"
+            >
+              <div className="w-16 h-16 bg-[#00E5FF] rounded-full border-4 border-black flex items-center justify-center mx-auto -mt-12 mb-2 shadow-sm">
+                <Lightbulb className="w-8 h-8 text-[#FFFF00] fill-[#FFFF00]" />
+              </div>
+              
+              <h3 className="font-black text-lg text-black">{reflections[activeQuestion].q}</h3>
+              
+              <div className="bg-[#00FF00] p-4 rounded-2xl border-2 border-black shadow-inner">
+                <p className="font-bold text-base text-black leading-relaxed">
+                  {reflections[activeQuestion].a}
+                </p>
+              </div>
+
+              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setActiveQuestion(null)}
+                className="mt-2 py-3 bg-black text-white font-black uppercase rounded-xl border-2 border-transparent hover:border-black hover:bg-gray-800 transition-colors"
+              >
+                ĐÃ HIỂU! 🚀
+              </motion.button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ── LIGHTBOX MODAL ── */}
       <AnimatePresence>

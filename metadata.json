@@ -1,0 +1,6 @@
+{
+  "name": "Vi khuẩn có lợi trong chế biến thực phẩm",
+  "description": "Website học tập Khoa học Lớp 5 về vai trò của vi khuẩn Lactic trong làm sữa chua và muối chua thực phẩm.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

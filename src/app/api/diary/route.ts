@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Diary from '@/models/Diary';
+import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { sendDiaryNotification } from '@/lib/mailer';
@@ -19,27 +18,27 @@ async function getUser() {
 }
 
 export async function GET() {
-  await connectDB();
   const user = await getUser();
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const diaries = await Diary.find().sort({ createdAt: -1 });
+  const diaries = await prisma.diary.findMany({ orderBy: { createdAt: 'desc' } });
   return NextResponse.json({ success: true, diaries });
 }
 
 export async function POST(req: Request) {
-  await connectDB();
   const user = await getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
   
-  const newDiary = await Diary.create({
-    userId: user.userId,
-    studentName: user.name,
-    ...body
+  const newDiary = await prisma.diary.create({
+    data: {
+      userId: user.userId,
+      studentName: user.name,
+      ...body
+    }
   });
 
   // Gửi email thông báo cho GV (chạy ngầm không block request)

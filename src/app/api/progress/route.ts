@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Progress from '@/models/Progress';
+import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
@@ -18,36 +17,42 @@ async function getUser() {
 }
 
 export async function GET() {
-  await connectDB();
   const user = await getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  let progress = await Progress.findOne({ userId: user.userId });
+  let progress = await prisma.progress.findUnique({ where: { userId: user.userId } });
   if (!progress) {
-    progress = await Progress.create({ userId: user.userId, completedSteps: [], percentage: 0 });
+    progress = await prisma.progress.create({ data: { userId: user.userId, completedSteps: '', percentage: 0 } });
   }
 
-  return NextResponse.json({ success: true, progress });
+  const progressObj = { ...progress, completedSteps: progress.completedSteps ? progress.completedSteps.split(',') : [] };
+  return NextResponse.json({ success: true, progress: progressObj });
 }
 
 export async function PUT(req: Request) {
-  await connectDB();
   const user = await getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { stepKey } = await req.json();
   if (!stepKey) return NextResponse.json({ error: 'Thiếu stepKey' }, { status: 400 });
 
-  let progress = await Progress.findOne({ userId: user.userId });
+  let progress = await prisma.progress.findUnique({ where: { userId: user.userId } });
   if (!progress) {
-    progress = await Progress.create({ userId: user.userId, completedSteps: [], percentage: 0 });
+    progress = await prisma.progress.create({ data: { userId: user.userId, completedSteps: '', percentage: 0 } });
   }
 
-  if (!progress.completedSteps.includes(stepKey)) {
-    progress.completedSteps.push(stepKey);
-    progress.percentage = Math.round((progress.completedSteps.length / 5) * 100);
-    await progress.save();
+  const steps = progress.completedSteps ? progress.completedSteps.split(',') : [];
+  if (!steps.includes(stepKey)) {
+    steps.push(stepKey);
+    progress = await prisma.progress.update({
+      where: { userId: user.userId },
+      data: {
+        completedSteps: steps.join(','),
+        percentage: Math.round((steps.length / 5) * 100)
+      }
+    });
   }
 
-  return NextResponse.json({ success: true, progress });
+  const progressObj = { ...progress, completedSteps: progress.completedSteps ? progress.completedSteps.split(',') : [] };
+  return NextResponse.json({ success: true, progress: progressObj });
 }

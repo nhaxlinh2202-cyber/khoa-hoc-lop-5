@@ -12,3 +12,7 @@ build
 
 .vercel
 .env*
+
+/src/generated/prisma
+*.db
+*.db-journal

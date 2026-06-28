@@ -1,14 +1,12 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import connectDB from '@/lib/mongodb';
-import User from '@/models/User';
+import { prisma } from '@/lib/prisma';
 import { serialize } from 'cookie';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 
 export async function POST(req: Request) {
   try {
-    await connectDB();
     const body = await req.json();
 
     const { pin, studentName } = body;
@@ -21,9 +19,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Mã PIN không đúng' }, { status: 401 });
       }
 
-      user = await User.findOne({ role: 'teacher' });
+      user = await prisma.user.findFirst({ where: { role: 'teacher' } });
       if (!user) {
-        user = await User.create({ name: 'Teacher', role: 'teacher', pin: '1234' });
+        user = await prisma.user.create({ data: { name: 'Teacher', role: 'teacher', pin: '1234' } });
       }
     } else if (studentName) {
       // Student Login
@@ -31,9 +29,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Tên không được để trống' }, { status: 400 });
       }
 
-      user = await User.findOne({ name: studentName, role: 'student' });
+      user = await prisma.user.findFirst({ where: { name: studentName, role: 'student' } });
       if (!user) {
-        user = await User.create({ name: studentName, role: 'student' });
+        user = await prisma.user.create({ data: { name: studentName, role: 'student' } });
       }
     } else {
       return NextResponse.json({ error: 'Thiếu thông tin đăng nhập' }, { status: 400 });
@@ -41,7 +39,7 @@ export async function POST(req: Request) {
 
     // Generate JWT
     const token = jwt.sign(
-      { userId: user._id, role: user.role, name: user.name },
+      { userId: user.id, role: user.role, name: user.name },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -57,7 +55,7 @@ export async function POST(req: Request) {
 
     const response = NextResponse.json({
       success: true,
-      user: { id: user._id, name: user.name, role: user.role },
+      user: { id: user.id, name: user.name, role: user.role },
     });
     
     response.headers.set('Set-Cookie', serialized);

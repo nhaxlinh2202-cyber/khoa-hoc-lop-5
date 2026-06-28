@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import AssessmentSubmission from '@/models/AssessmentSubmission';
+import { prisma } from '@/lib/prisma';
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
@@ -18,30 +17,50 @@ async function getUser() {
 }
 
 export async function POST(req: Request) {
-  await connectDB();
   const user = await getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
     const body = await req.json();
     const { situationalAnswers, emotion, emotionNote } = body;
-
-    // We can either update an existing submission or create a new one. 
-    // Usually, a student might submit answers one by one, or all at once.
-    // Let's create a new record for every submission (or update if we want a single document per student).
-    // For simplicity, we'll upsert (update if exists, create if not) based on userId.
     
-    const updatedSubmission = await AssessmentSubmission.findOneAndUpdate(
-      { userId: user.userId },
-      { 
-        $set: { studentName: user.name, emotion, emotionNote },
-        // Append new answers to the array if they exist, or just overwrite if passed
-        ...(situationalAnswers && situationalAnswers.length > 0 ? { $push: { situationalAnswers: { $each: situationalAnswers } } } : {})
-      },
-      { new: true, upsert: true }
-    );
+    let submission = await prisma.assessmentSubmission.findUnique({ where: { userId: user.userId } });
 
-    return NextResponse.json({ success: true, data: updatedSubmission });
+    if (submission) {
+      submission = await prisma.assessmentSubmission.update({
+        where: { userId: user.userId },
+        data: {
+          studentName: user.name,
+          ...(emotion !== undefined && { emotion }),
+          ...(emotionNote !== undefined && { emotionNote }),
+          situationalAnswers: situationalAnswers && situationalAnswers.length > 0 ? {
+            create: situationalAnswers.map((ans: any) => ({
+              questionId: ans.questionId,
+              studentAnswer: ans.studentAnswer
+            }))
+          } : undefined
+        },
+        include: { situationalAnswers: true }
+      });
+    } else {
+      submission = await prisma.assessmentSubmission.create({
+        data: {
+          userId: user.userId,
+          studentName: user.name,
+          emotion: emotion || null,
+          emotionNote: emotionNote || null,
+          situationalAnswers: situationalAnswers && situationalAnswers.length > 0 ? {
+            create: situationalAnswers.map((ans: any) => ({
+              questionId: ans.questionId,
+              studentAnswer: ans.studentAnswer
+            }))
+          } : undefined
+        },
+        include: { situationalAnswers: true }
+      });
+    }
+
+    return NextResponse.json({ success: true, data: submission });
   } catch (error: any) {
     console.error('Assessment API Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
@@ -49,17 +68,21 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  await connectDB();
   const user = await getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    // If teacher, return all submissions. If student, return only theirs.
     if (user.role === 'teacher') {
-      const submissions = await AssessmentSubmission.find().sort({ updatedAt: -1 });
+      const submissions = await prisma.assessmentSubmission.findMany({ 
+        orderBy: { updatedAt: 'desc' },
+        include: { situationalAnswers: true }
+      });
       return NextResponse.json({ success: true, submissions });
     } else {
-      const submission = await AssessmentSubmission.findOne({ userId: user.userId });
+      const submission = await prisma.assessmentSubmission.findUnique({ 
+        where: { userId: user.userId },
+        include: { situationalAnswers: true }
+      });
       return NextResponse.json({ success: true, submission });
     }
   } catch (error: any) {

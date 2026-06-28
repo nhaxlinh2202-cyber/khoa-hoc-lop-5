@@ -2,7 +2,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, Lightbulb, Maximize, Minimize, Loader2, Gamepad2, BookOpenCheck, ShieldAlert, ThermometerSnowflake, Edit3, Check, X, Send, Heart, Smile, Frown, Meh, Star } from 'lucide-react';
-import { AppleEmoji } from '../../../components/shared/AppleEmoji';
 
 interface AccordionItem { id: string; icon: React.ReactNode; question: string; context: string; hints: string[]; answer: string; }
 
@@ -132,7 +131,7 @@ export default function Assessment() {
       <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="px-4 py-1.5 rounded-full bg-[#FF00FF] text-white font-black text-lg uppercase border-2 border-black flex items-center gap-1">
-            <AppleEmoji symbol="🎯" /> Chặng 5
+            🎯 Chặng 5
           </div>
           <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
             TRÒ CHƠI <span className="text-[#FF0000]">ÔN TẬP!</span>
@@ -239,7 +238,7 @@ export default function Assessment() {
                   <div className="w-16 h-16 bg-white rounded-full border-4 border-black flex items-center justify-center">
                     <Check className="w-8 h-8 text-[#00AA00]" />
                   </div>
-                  <h4 className="font-black text-xl text-black uppercase flex items-center justify-center gap-2">ĐÃ GỬI LÊN MÂY! <AppleEmoji symbol="☁️" /></h4>
+                  <h4 className="font-black text-xl text-black uppercase flex items-center justify-center gap-2">ĐÃ GỬI LÊN MÂY! ☁️</h4>
                   <p className="font-bold text-sm text-gray-800">Cảm ơn bé đã chia sẻ. Hẹn gặp lại nhé!</p>
                 </div>
               ) : (
@@ -285,7 +284,7 @@ export default function Assessment() {
                     disabled={isSubmittingDiary}
                     className="w-full py-4 bg-[#FF0000] text-white border-4 border-black rounded-2xl font-black text-lg uppercase shadow-[4px_4px_0px_0px_#000000] flex items-center justify-center gap-2 hover:bg-[#CC0000]"
                   >
-                    {isSubmittingDiary ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Send className="w-6 h-6" /> GỬI LÊN MÂY <AppleEmoji symbol="☁️" /></>}
+                    {isSubmittingDiary ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Send className="w-6 h-6" /> GỬI LÊN MÂY ☁️</>}
                   </motion.button>
                 </div>
               )}

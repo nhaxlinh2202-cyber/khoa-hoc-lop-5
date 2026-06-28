@@ -4,14 +4,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'motion/react';
 import { LogOut, Play, Lock, Trophy, Star, Sparkles } from 'lucide-react';
-import { AppleEmoji } from '../../components/shared/AppleEmoji';
 
 const steps = [
-  { id: 'hd1', progressKey: 'hd1', name: <>BÀI 1: LÀM SỮA CHUA <AppleEmoji symbol="🥣" /></>, path: '/activity/hd1', color: 'bg-[#FF0000]', emoji: <AppleEmoji symbol="🥛" /> },
-  { id: 'hd2', progressKey: 'hd2', name: <>BÀI 2: CHẤM ĐIỂM <AppleEmoji symbol="⭐" /></>, path: '/activity/hd2', color: 'bg-[#FF00FF]', emoji: <AppleEmoji symbol="🏅" /> },
-  { id: 'hd3', progressKey: 'hd3', name: <>BÀI 3: SOI VI KHUẨN <AppleEmoji symbol="🔬" /></>, path: '/activity/hd3', color: 'bg-[#00FF00]', emoji: <AppleEmoji symbol="🦠" /> },
-  { id: 'hd4', progressKey: 'hd4', name: <>BÀI 4: CỨU HỘ <AppleEmoji symbol="🚑" /></>, path: '/activity/hd4', color: 'bg-[#FF8C00]', emoji: <AppleEmoji symbol="💡" /> },
-  { id: 'assessment', progressKey: 'assessment', name: <>ÔN TẬP: TRÒ CHƠI <AppleEmoji symbol="🎮" /></>, path: '/activity/assessment', color: 'bg-[#00E5FF]', emoji: <AppleEmoji symbol="🎯" /> },
+  { id: 'hd1', progressKey: 'hd1', name: <>BÀI 1: LÀM SỮA CHUA 🥣</>, path: '/activity/hd1', color: 'bg-[#FF0000]', emoji: 🥛 },
+  { id: 'hd2', progressKey: 'hd2', name: <>BÀI 2: CHẤM ĐIỂM ⭐</>, path: '/activity/hd2', color: 'bg-[#FF00FF]', emoji: 🏅 },
+  { id: 'hd3', progressKey: 'hd3', name: <>BÀI 3: SOI VI KHUẨN 🔬</>, path: '/activity/hd3', color: 'bg-[#00FF00]', emoji: 🦠 },
+  { id: 'hd4', progressKey: 'hd4', name: <>BÀI 4: CỨU HỘ 🚑</>, path: '/activity/hd4', color: 'bg-[#FF8C00]', emoji: 💡 },
+  { id: 'assessment', progressKey: 'assessment', name: <>ÔN TẬP: TRÒ CHƠI 🎮</>, path: '/activity/assessment', color: 'bg-[#00E5FF]', emoji: 🎯 },
 ];
 
 export default function HomePage() {
@@ -102,7 +101,7 @@ export default function HomePage() {
           <div className="absolute top-0 right-0 w-48 h-48 bg-white rounded-full blur-2xl opacity-30 -mr-10 -mt-10 pointer-events-none" />
           
           <div className="w-24 h-24 bg-white border-4 border-black rounded-full flex items-center justify-center shadow-inner shrink-0 z-10">
-            <span className="text-5xl drop-shadow-md flex justify-center items-center"><AppleEmoji symbol="🚀" className="w-12 h-12" /></span>
+            <span className="text-5xl drop-shadow-md flex justify-center items-center">🚀</span>
           </div>
 
           <div className="flex-1 z-10 space-y-3 text-center md:text-left w-full">

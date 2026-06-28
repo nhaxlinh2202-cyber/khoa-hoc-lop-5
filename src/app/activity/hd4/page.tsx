@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, RotateCcw, HelpCircle, Eye, BookOpen, Mail, Zap, AlarmClock, X } from 'lucide-react';
-import { AppleEmoji } from '../../../components/shared/AppleEmoji';
 
 export default function ActivityFour() {
   const [timeLeft, setTimeLeft] = useState(300);
@@ -58,7 +57,7 @@ export default function ActivityFour() {
       <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="px-4 py-1.5 rounded-full bg-[#FF4500] text-white font-black text-lg uppercase border-2 border-black flex items-center gap-1">
-            <AppleEmoji symbol="🚑" /> Chặng 4
+            🚑 Chặng 4
           </div>
           <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
             ĐIỆP VỤ <span className="text-[#0000FF]">CỨU SỮA CHUA!</span>
@@ -89,12 +88,12 @@ export default function ActivityFour() {
             <div className="flex-1 overflow-y-auto space-y-4 pr-2 custom-scrollbar">
               <div className="bg-[#FFFF00] p-4 rounded-2xl border-2 border-black">
                 <p className="font-bold text-lg md:text-xl text-black leading-relaxed">
-                  "Tớ đã đun sôi sữa, và cẩn thận đổ hộp sữa chua mồi vào <span className="text-[#FF0000] underline decoration-wavy font-black">NGAY LÚC SỮA ĐANG SÔI</span>. Tớ ủ ấm 8 tiếng, nhưng sữa vẫn lỏng như nước! Tại sao vậy? <AppleEmoji symbol="😭" />"
+                  "Tớ đã đun sôi sữa, và cẩn thận đổ hộp sữa chua mồi vào <span className="text-[#FF0000] underline decoration-wavy font-black">NGAY LÚC SỮA ĐANG SÔI</span>. Tớ ủ ấm 8 tiếng, nhưng sữa vẫn lỏng như nước! Tại sao vậy? 😭"
                 </p>
               </div>
 
               <div className="p-4 bg-[#0000FF] border-2 border-black rounded-2xl text-white shadow-inner">
-                <h4 className="font-black text-lg uppercase mb-2 text-[#FFFF00] flex items-center gap-2"><AppleEmoji symbol="🔥" /> NHIỆM VỤ NHÓM:</h4>
+                <h4 className="font-black text-lg uppercase mb-2 text-[#FFFF00] flex items-center gap-2">🔥 NHIỆM VỤ NHÓM:</h4>
                 <p className="font-bold text-base md:text-lg leading-relaxed">
                   Hãy giải thích vì sao bạn ấy thất bại và làm cách nào để cứu mẻ sữa này?
                 </p>
@@ -190,10 +189,10 @@ export default function ActivityFour() {
               </h4>
               <ul className="space-y-4 text-black font-bold text-lg md:text-xl">
                 <li className="flex items-start gap-3">
-                  <span className="text-2xl"><AppleEmoji symbol="👉" /></span> Vi khuẩn lactic sẽ ra sao nếu nhảy vào nồi nước sôi sùng sục?
+                  <span className="text-2xl">👉</span> Vi khuẩn lactic sẽ ra sao nếu nhảy vào nồi nước sôi sùng sục?
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-2xl"><AppleEmoji symbol="👉" /></span> Bạn nên đợi sữa nguội đến nhiệt độ nào rồi mới đưa "quân cứu viện" vào?
+                  <span className="text-2xl">👉</span> Bạn nên đợi sữa nguội đến nhiệt độ nào rồi mới đưa "quân cứu viện" vào?
                 </li>
               </ul>
             </motion.div>
@@ -222,18 +221,18 @@ export default function ActivityFour() {
               
               <div className="space-y-4">
                 <div className="bg-white p-4 sm:p-6 rounded-2xl border-2 border-black shadow-inner">
-                  <h5 className="font-black text-xl text-[#FF0000] mb-2 flex items-center gap-2"><AppleEmoji symbol="🕵️" /> NGUYÊN NHÂN:</h5>
+                  <h5 className="font-black text-xl text-[#FF0000] mb-2 flex items-center gap-2">🕵️ NGUYÊN NHÂN:</h5>
                   <p className="text-black font-bold text-lg leading-relaxed">
                     Nước sôi đã làm <span className="font-black">chết bỏng</span> toàn bộ vi khuẩn lactic! Chúng chỉ sống được ở mức ấm (30°C - 50°C).
                   </p>
                 </div>
                   
                 <div className="bg-white p-4 sm:p-6 rounded-2xl border-2 border-black shadow-inner">
-                  <h5 className="font-black text-xl text-[#00AA00] mb-2 flex items-center gap-2"><AppleEmoji symbol="🚑" /> CÁCH GIẢI CỨU:</h5>
+                  <h5 className="font-black text-xl text-[#00AA00] mb-2 flex items-center gap-2">🚑 CÁCH GIẢI CỨU:</h5>
                   <ul className="text-black font-bold text-lg space-y-2">
-                    <li className="flex items-center gap-2"><AppleEmoji symbol="1️⃣" /> Đợi bình sữa nguội bớt (như nước tắm em bé).</li>
-                    <li className="flex items-center gap-2"><AppleEmoji symbol="2️⃣" /> Đổ 1 hộp sữa chua mồi MỚI vào.</li>
-                    <li className="flex items-center gap-2"><AppleEmoji symbol="3️⃣" /> Ủ ấm lại 6 - 8 giờ là xong!</li>
+                    <li className="flex items-center gap-2">1️⃣ Đợi bình sữa nguội bớt (như nước tắm em bé).</li>
+                    <li className="flex items-center gap-2">2️⃣ Đổ 1 hộp sữa chua mồi MỚI vào.</li>
+                    <li className="flex items-center gap-2">3️⃣ Ủ ấm lại 6 - 8 giờ là xong!</li>
                   </ul>
                 </div>
               </div>

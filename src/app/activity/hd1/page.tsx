@@ -3,7 +3,6 @@ import { useState, FormEvent, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Send, ClipboardList, CheckCircle, ShieldAlert, Maximize, Minimize, BookHeart, Video } from 'lucide-react';
 import { INITIAL_DIARY_ENTRIES } from '../../../data';
-import { AppleEmoji } from '../../../components/shared/AppleEmoji';
 
 export default function ActivityOne() {
   const [entries, setEntries] = useState<any[]>(INITIAL_DIARY_ENTRIES);
@@ -82,7 +81,7 @@ export default function ActivityOne() {
       <header className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between z-10">
         <div className="flex items-center gap-3">
           <div className="px-4 py-1.5 rounded-full bg-[#FF0000] text-white font-black text-lg uppercase border-2 border-black flex items-center gap-1">
-            <AppleEmoji symbol="🌟" /> Chặng 1
+            🌟 Chặng 1
           </div>
           <h2 className="font-display font-black text-2xl text-black uppercase">
             LÀM SỮA CHUA <span className="text-[#FF00FF]">TUYỆT NGON!</span>
@@ -139,7 +138,7 @@ export default function ActivityOne() {
               <div className="p-2 bg-white border-2 border-black rounded-full">
                 <BookHeart className="w-5 h-5 text-[#FF00FF]" />
               </div>
-              <span className="font-black text-xl uppercase flex items-center gap-2">SỔ TAY MA THUẬT <AppleEmoji symbol="📝" /></span>
+              <span className="font-black text-xl uppercase flex items-center gap-2">SỔ TAY MA THUẬT 📝</span>
             </div>
 
             {/* Scrollable Form Area */}
@@ -248,14 +247,14 @@ export default function ActivityOne() {
 
               <div className="p-6 space-y-4 bg-[#FFFF00]">
                 <div className="flex items-start gap-4 bg-white p-4 rounded-2xl border-2 border-black">
-                  <AppleEmoji symbol="🔥" className="w-8 h-8 mt-1" />
+                  🔥
                   <div>
                     <p className="font-black text-lg text-black uppercase mb-1">Cần người lớn!</p>
                     <p className="text-sm font-bold text-gray-700">Tuyệt đối không tự đun nước sôi. Hãy nhờ ba mẹ chuẩn bị nước ấm giúp nhé!</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4 bg-white p-4 rounded-2xl border-2 border-black">
-                  <AppleEmoji symbol="🧼" className="w-8 h-8 mt-1" />
+                  🧼
                   <div>
                     <p className="font-black text-lg text-black uppercase mb-1">Vệ sinh sạch sẽ!</p>
                     <p className="text-sm font-bold text-gray-700">Rửa tay và tráng hũ thủy tinh bằng nước sôi để vi khuẩn xấu không lọt vào sữa.</p>

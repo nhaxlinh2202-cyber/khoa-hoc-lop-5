@@ -152,10 +152,6 @@ export default function HomePage() {
                     <div className="w-8 h-8 bg-black rounded-full border-2 border-white flex items-center justify-center">
                       <Lock className="w-4 h-4 text-white" />
                     </div>
-                  ) : isCompleted ? (
-                    <div className="w-8 h-8 bg-[#FFFF00] rounded-full border-2 border-black flex items-center justify-center shadow-md">
-                      <Star className="w-4 h-4 text-black fill-black" />
-                    </div>
                   ) : null}
                 </div>
 

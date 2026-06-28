@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Microscope, Sparkles, RefreshCcw, Map, X, GitMerge } from 'lucide-react';
 import Script from 'next/script';
+import { AppleEmoji } from '../../../components/shared/AppleEmoji';
 
 const QUIZ_QUESTIONS = [
   { q: "Sữa chua được tạo ra nhờ vi khuẩn tên là {input}", a: "Lactic" },
@@ -58,8 +59,8 @@ export default function ActivityThree() {
       {/* HEADER */}
       <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="px-4 py-1.5 rounded-full bg-[#00FF00] text-black font-black text-lg uppercase border-2 border-black">
-            🦠 Chặng 3 
+          <div className="px-4 py-1.5 rounded-full bg-[#00FF00] text-black font-black text-lg uppercase border-2 border-black flex items-center gap-1">
+            <AppleEmoji symbol="🦠" /> Chặng 3 
           </div>
           <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
             SOI VI KHUẨN <span className="text-[#FF0000]">LACTIC!</span>
@@ -124,7 +125,7 @@ export default function ActivityThree() {
 
             {/* Word Bank */}
             <div className="flex-none bg-gray-100 p-4 rounded-2xl border-2 border-gray-400 mb-4 flex flex-col justify-center">
-              <p className="text-sm font-black text-gray-500 uppercase mb-2 text-center">📦 KHO TỪ VỰNG (KÉO HOẶC CHẠM)</p>
+              <p className="text-sm font-black text-gray-500 uppercase mb-2 text-center flex items-center justify-center gap-1"><AppleEmoji symbol="📦" /> KHO TỪ VỰNG (KÉO HOẶC CHẠM)</p>
               <div className="flex flex-wrap justify-center gap-3">
                 {WORD_BANK.map((word) => (
                   <motion.div
@@ -191,7 +192,7 @@ export default function ActivityThree() {
                 onClick={submitQuiz}
                 className="w-full sm:w-auto px-8 py-3 bg-[#0000FF] text-white rounded-2xl font-black text-xl border-4 border-black shadow-[4px_4px_0px_0px_#00E5FF] uppercase hover:bg-[#0000CC]"
               >
-                CHẤM ĐIỂM NGAY! 🎯
+                <span className="flex items-center gap-2">CHẤM ĐIỂM NGAY! <AppleEmoji symbol="🎯" /></span>
               </motion.button>
               
               <AnimatePresence>
@@ -260,8 +261,8 @@ export default function ActivityThree() {
                     {/* BRANCH 1: NGUYÊN LIỆU */}
                     <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
                       <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
-                      <div className="bg-[#FFFF00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-black w-[200px] shrink-0 text-center">
-                        🥛 NGUYÊN LIỆU
+                      <div className="bg-[#FFFF00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-black w-[200px] shrink-0 text-center flex items-center justify-center gap-2">
+                        <AppleEmoji symbol="🥛" /> NGUYÊN LIỆU
                       </div>
                       <div className="flex flex-col gap-3 relative">
                         <div className="hidden md:block absolute left-[-1rem] top-[20%] bottom-[20%] w-[4px] bg-black"></div>
@@ -279,8 +280,8 @@ export default function ActivityThree() {
                     {/* BRANCH 2: ĐIỀU KIỆN Ủ */}
                     <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
                       <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
-                      <div className="bg-[#FF00FF] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-white w-[200px] shrink-0 text-center">
-                        🔥 ĐIỀU KIỆN Ủ
+                      <div className="bg-[#FF00FF] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-white w-[200px] shrink-0 text-center flex items-center justify-center gap-2">
+                        <AppleEmoji symbol="🔥" /> ĐIỀU KIỆN Ủ
                       </div>
                       <div className="flex flex-col gap-3 relative">
                         <div className="hidden md:block absolute left-[-1rem] top-[15%] bottom-[15%] w-[4px] bg-black"></div>
@@ -302,8 +303,8 @@ export default function ActivityThree() {
                     {/* BRANCH 3: HIỆN TƯỢNG */}
                     <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
                       <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
-                      <div className="bg-[#00FF00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-black w-[200px] shrink-0 text-center">
-                        🧪 CƠ CHẾ
+                      <div className="bg-[#00FF00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-black w-[200px] shrink-0 text-center flex items-center justify-center gap-2">
+                        <AppleEmoji symbol="🧪" /> CƠ CHẾ
                       </div>
                       <div className="flex flex-col gap-3 relative">
                         <div className="hidden md:block absolute left-[-1rem] top-[20%] bottom-[20%] w-[4px] bg-black"></div>
@@ -321,8 +322,8 @@ export default function ActivityThree() {
                     {/* BRANCH 4: LỢI ÍCH */}
                     <motion.div whileHover={{ x: 10 }} className="flex items-center gap-4 relative z-10">
                       <div className="hidden md:block absolute left-[-3rem] w-[3rem] h-[6px] bg-black top-1/2 -translate-y-1/2"></div>
-                      <div className="bg-[#FF8C00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-white w-[200px] shrink-0 text-center">
-                        ⭐ LỢI ÍCH
+                      <div className="bg-[#FF8C00] px-4 py-3 border-[4px] border-black rounded-2xl shadow-[6px_6px_0px_0px_#000000] font-black text-lg text-white w-[200px] shrink-0 text-center flex items-center justify-center gap-2">
+                        <AppleEmoji symbol="⭐" /> LỢI ÍCH
                       </div>
                       <div className="flex flex-col gap-3 relative">
                         <div className="hidden md:block absolute left-[-1rem] top-[20%] bottom-[20%] w-[4px] bg-black"></div>

@@ -62,3 +62,8 @@ body {
 .animate-bounce-in {
   animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
+
+/* Make all UI Icons elegant and thin like iOS SF Symbols */
+svg.lucide {
+  stroke-width: 1.5px !important;
+}

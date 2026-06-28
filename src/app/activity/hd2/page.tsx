@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Star, CheckCircle, BrainCircuit, X, ImageIcon, Award, Lightbulb } from 'lucide-react';
 import { RUBRIC_CRITERIA } from '../../../data';
+import { AppleEmoji } from '../../../components/shared/AppleEmoji';
 
 export default function ActivityTwo() {
   const [ratings, setRatings] = useState<Record<string, number>>(() => {
@@ -43,9 +44,9 @@ export default function ActivityTwo() {
   const scorePercent = Math.round((currentTotal / totalPossible) * 100);
 
   const getRubricVerdict = (percent: number) => {
-    if (percent >= 90) return { title: 'XUẤT SẮC! 🏆', color: 'bg-[#FF1493] text-white border-white' };
-    if (percent >= 70) return { title: 'RẤT TỐT! 👍', color: 'bg-[#00FF00] text-black border-black' };
-    return { title: 'CỐ GẮNG LÊN! 🧪', color: 'bg-[#FF4500] text-white border-white' };
+    if (percent >= 90) return { title: <>XUẤT SẮC! <AppleEmoji symbol="🏆" /></>, color: 'bg-[#FF1493] text-white border-white' };
+    if (percent >= 70) return { title: <>RẤT TỐT! <AppleEmoji symbol="👍" /></>, color: 'bg-[#00FF00] text-black border-black' };
+    return { title: <>CỐ GẮNG LÊN! <AppleEmoji symbol="🧪" /></>, color: 'bg-[#FF4500] text-white border-white' };
   };
 
   const verdict = getRubricVerdict(scorePercent);
@@ -56,8 +57,8 @@ export default function ActivityTwo() {
       {/* HEADER */}
       <div className="flex-none bg-white px-6 py-3 rounded-2xl shadow-[8px_8px_0px_0px_#000000] border-4 border-black mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="px-4 py-1.5 rounded-full bg-[#FFFF00] text-black font-black text-lg uppercase border-2 border-black">
-            ⭐ Chặng 2
+          <div className="px-4 py-1.5 rounded-full bg-[#FFFF00] text-black font-black text-lg uppercase border-2 border-black flex items-center gap-1">
+            <AppleEmoji symbol="⭐" /> Chặng 2
           </div>
           <h2 className="font-display font-black text-2xl md:text-3xl text-black uppercase">
             CHẤM ĐIỂM <span className="text-[#FF00FF]">SỮA CHUA!</span>
@@ -78,7 +79,7 @@ export default function ActivityTwo() {
               </h3>
               <div className="flex items-center gap-3">
                 <span className="font-black text-2xl text-black">{currentTotal}/{totalPossible}</span>
-                <div className={`px-3 py-1 rounded-xl border-2 font-black text-sm ${verdict.color}`}>
+                <div className={`px-3 py-1 rounded-xl border-2 font-black text-sm flex items-center gap-1 ${verdict.color}`}>
                   {verdict.title}
                 </div>
               </div>
@@ -196,7 +197,7 @@ export default function ActivityTwo() {
               <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setActiveQuestion(null)}
                 className="mt-2 py-3 bg-black text-white font-black uppercase rounded-xl border-2 border-transparent hover:border-black hover:bg-gray-800 transition-colors"
               >
-                ĐÃ HIỂU! 🚀
+                <span className="flex items-center gap-2">ĐÃ HIỂU! <AppleEmoji symbol="🚀" /></span>
               </motion.button>
             </motion.div>
           </div>
@@ -219,8 +220,8 @@ export default function ActivityTwo() {
               className="relative max-w-4xl w-full text-center" onClick={(e) => e.stopPropagation()}
             >
               <img src="/models/yogurt_comparison.png" alt="So sánh" className="w-full h-auto rounded-3xl border-4 border-white shadow-2xl mb-4" />
-              <p className="font-black text-lg md:text-2xl text-[#FFFF00] uppercase drop-shadow-md">
-                ⭐ TRÁI (Đặc) — GIỮA (Lỏng) — PHẢI (Hỏng)
+              <p className="font-black text-lg md:text-2xl text-[#FFFF00] uppercase drop-shadow-md flex items-center justify-center gap-2">
+                <AppleEmoji symbol="⭐" /> TRÁI (Đặc) — GIỮA (Lỏng) — PHẢI (Hỏng)
               </p>
             </motion.div>
           </motion.div>

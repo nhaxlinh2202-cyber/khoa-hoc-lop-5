@@ -6,11 +6,11 @@ import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 
 const STEPS = [
-  { path: '/activity/hd1', label: 'HĐ1 - Trải nghiệm' },
-  { path: '/activity/hd2', label: 'HĐ2 - Lý thuyết' },
-  { path: '/activity/hd3', label: 'HĐ3 - Phản ngẫm' },
-  { path: '/activity/hd4', label: 'HĐ4 - Vận dụng' },
-  { path: '/activity/assessment', label: 'HĐ5 - Đánh giá' },
+  { path: '/activity/hd1', label: 'LÀM SỮA CHUA' },
+  { path: '/activity/hd2', label: 'CHẤM ĐIỂM' },
+  { path: '/activity/hd3', label: 'SOI VI KHUẨN' },
+  { path: '/activity/hd4', label: 'TÌNH HUỐNG' },
+  { path: '/activity/assessment', label: 'NHẬT KÝ' },
 ];
 
 export default function ActivityLayout({

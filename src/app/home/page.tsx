@@ -6,11 +6,11 @@ import { motion } from 'motion/react';
 import { LogOut, Play, Lock, Trophy, Star, Sparkles } from 'lucide-react';
 
 const steps = [
-  { id: 'hd1', progressKey: 'hd1', name: <>BÀI 1: LÀM SỮA CHUA 🥣</>, path: '/activity/hd1', color: 'bg-[#FF0000]', emoji: 🥛 },
-  { id: 'hd2', progressKey: 'hd2', name: <>BÀI 2: CHẤM ĐIỂM ⭐</>, path: '/activity/hd2', color: 'bg-[#FF00FF]', emoji: 🏅 },
-  { id: 'hd3', progressKey: 'hd3', name: <>BÀI 3: SOI VI KHUẨN 🔬</>, path: '/activity/hd3', color: 'bg-[#00FF00]', emoji: 🦠 },
-  { id: 'hd4', progressKey: 'hd4', name: <>BÀI 4: CỨU HỘ 🚑</>, path: '/activity/hd4', color: 'bg-[#FF8C00]', emoji: 💡 },
-  { id: 'assessment', progressKey: 'assessment', name: <>ÔN TẬP: TRÒ CHƠI 🎮</>, path: '/activity/assessment', color: 'bg-[#00E5FF]', emoji: 🎯 },
+  { id: 'hd1', progressKey: 'hd1', name: <>BÀI 1: LÀM SỮA CHUA 🥣</>, path: '/activity/hd1', color: 'bg-[#FF0000]', emoji: '🥛' },
+  { id: 'hd2', progressKey: 'hd2', name: <>BÀI 2: CHẤM ĐIỂM ⭐</>, path: '/activity/hd2', color: 'bg-[#FF00FF]', emoji: '🏅' },
+  { id: 'hd3', progressKey: 'hd3', name: <>BÀI 3: SOI VI KHUẨN 🔬</>, path: '/activity/hd3', color: 'bg-[#00FF00]', emoji: '🦠' },
+  { id: 'hd4', progressKey: 'hd4', name: <>BÀI 4: CỨU HỘ 🚑</>, path: '/activity/hd4', color: 'bg-[#FF8C00]', emoji: '💡' },
+  { id: 'assessment', progressKey: 'assessment', name: <>ÔN TẬP: TRÒ CHƠI 🎮</>, path: '/activity/assessment', color: 'bg-[#00E5FF]', emoji: '🎯' },
 ];
 
 export default function HomePage() {

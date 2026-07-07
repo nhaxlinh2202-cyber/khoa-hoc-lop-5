@@ -340,7 +340,7 @@ export default function TrongLopT1Page() {
           {currentActivity === 1 && (
             <div className="flex-1 p-2 md:p-4 overflow-hidden w-full h-full flex flex-col">
               <div className="flex-none text-center mb-2 md:mb-4">
-                <h2 className="text-xl md:text-3xl font-black uppercase text-[#FF00FF]">1. KÍNH HIỂN VI X-RAY 🔭</h2>
+                <h2 className="text-xl md:text-3xl font-black uppercase text-[#FF00FF]">KÍNH HIỂN VI X-RAY 🔭</h2>
                 <p className="font-bold text-gray-600 text-sm md:text-base hidden sm:block">Bấm nút để bốc thăm ngẫu nhiên một món ăn của học sinh.</p>
               </div>
 
@@ -455,7 +455,7 @@ export default function TrongLopT1Page() {
           {currentActivity === 2 && (
             <div className="flex-1 p-2 md:p-4 overflow-hidden w-full h-full flex flex-col">
               <div className="flex-none text-center mb-2 md:mb-4">
-                <h2 className="text-xl md:text-3xl font-black uppercase text-[#FF8C00]">2. SƠ ĐỒ LÊN MEN 🥬🥣</h2>
+                <h2 className="text-xl md:text-3xl font-black uppercase text-[#FF8C00]">SƠ ĐỒ LÊN MEN 🥬🥣</h2>
               </div>
               
               <div className="flex-1 flex flex-row gap-2 md:gap-4 min-h-0 w-full">
@@ -598,7 +598,7 @@ export default function TrongLopT1Page() {
           {currentActivity === 3 && (
             <div className="flex-1 p-2 md:p-4 overflow-hidden w-full h-full flex flex-col">
               <div className="flex-none text-center mb-2 md:mb-4">
-                <h2 className="text-xl md:text-3xl font-black uppercase text-[#00E5FF]">3. BÀN CÂN DINH DƯỠNG ⚖️</h2>
+                <h2 className="text-xl md:text-3xl font-black uppercase text-[#00E5FF]">BÀN CÂN DINH DƯỠNG ⚖️</h2>
               </div>
               
               <div className="flex-1 flex flex-row gap-2 md:gap-4 min-h-0 w-full">

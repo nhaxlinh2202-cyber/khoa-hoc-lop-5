@@ -234,7 +234,7 @@ export default function TruocLopPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 {/* Nút chọn THỰC TẾ */}
                 <div className="bg-white border-4 border-black p-6 md:p-8 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col hover:-translate-y-2 transition-transform cursor-pointer group" onClick={() => setActiveForm('A')}>
-                  <h2 className="text-2xl md:text-3xl font-black uppercase mb-4 text-[#FF00FF] flex items-center justify-center gap-2 group-hover:scale-105 transition-transform">THỰC TẾ 📷</h2>
+                  <h2 className="text-2xl md:text-3xl font-black uppercase mb-4 text-[#FF00FF] flex items-center justify-center gap-2 group-hover:scale-105 transition-transform">KHÁM PHÁ THỰC TẾ 📷</h2>
                   <p className="text-base md:text-lg font-bold mb-6 text-center text-gray-700 flex-1">Hãy mở tủ lạnh hoặc xuống bếp tìm xem nhà mình có món ăn lên men nào không nhé!</p>
                   <button className="w-full py-3 md:py-4 bg-[#FF00FF] text-white font-black text-lg md:text-xl rounded-xl flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_#000000] group-hover:bg-pink-600 transition-colors">
                     <Send className="w-5 h-5 md:w-6 md:h-6" /> NỘP BÀI
@@ -257,7 +257,7 @@ export default function TruocLopPage() {
                     <div className="bg-white border-4 border-black p-4 md:p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-in fade-in zoom-in duration-200">
                       {/* CỘT TRÁI: NHÁNH A */}
                   <div className="flex items-center justify-between mb-1 md:mb-2">
-                    <h2 className="text-xl md:text-2xl font-black uppercase text-[#FF00FF] flex items-center gap-2">THỰC TẾ 📷</h2>
+                    <h2 className="text-xl md:text-2xl font-black uppercase text-[#FF00FF] flex items-center gap-2">KHÁM PHÁ THỰC TẾ 📷</h2>
                     <button onClick={() => setActiveForm('none')} className="text-sm font-bold bg-gray-200 px-3 py-1 rounded-lg border-2 border-black hover:bg-gray-300">◀ Quay lại</button>
                   </div>
                   <p className="text-sm md:text-base font-bold mb-2 md:mb-3 border-b-2 border-gray-200 pb-1 md:pb-2">Hãy mở tủ lạnh hoặc xuống bếp tìm xem nhà mình có món ăn lên men nào không nhé!</p>

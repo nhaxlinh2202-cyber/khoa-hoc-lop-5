@@ -16,15 +16,19 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  progress    Progress?
-  diaries     Diary[]
-  assessments AssessmentSubmission[]
+  progress          Progress?
+  preClassDiaries   PreClassDiary[]
+  postClassDiaries  PostClassDiary[]
+  assessments       AssessmentSubmission[]
+  lessonReflections LessonReflection[]
+  PreClassReaction  PreClassReaction[]
+  PostClassReaction PostClassReaction[]
 }
 
 model Progress {
   id             String   @id @default(cuid())
   userId         String   @unique
-  completedSteps String   
+  completedSteps String
   percentage     Int      @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -32,18 +36,103 @@ model Progress {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Diary {
-  id           String   @id @default(cuid())
-  userId       String
-  studentName  String
-  studentGroup String?
-  startTime    String
-  color        String
-  state        String
-  taste        String
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+model PreClassDiary {
+  id          String   @id @default(cuid())
+  userId      String
+  studentName String
+  type        String // "THUC_TE" hoặc "TU_LANH"
+  foodName    String
+  color       String?
+  state       String?
+  taste       String?
+  reason      String? // Lý do tò mò (Nhánh B)
+  imageUrl    String? // Ảnh chụp (Nhánh A)
+  likes       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments         ForumComment[]
+  PreClassReaction PreClassReaction[]
+}
+
+model ForumComment {
+  id              String   @id @default(cuid())
+  preClassDiaryId String
+  userId          String
+  studentName     String
+  content         String
+  createdAt       DateTime @default(now())
+
+  diary PreClassDiary @relation(fields: [preClassDiaryId], references: [id], onDelete: Cascade)
+}
+
+model PreClassReaction {
+  id              String   @id @default(cuid())
+  preClassDiaryId String
+  userId          String
+  emoji           String
+  createdAt       DateTime @default(now())
+
+  diary PreClassDiary @relation(fields: [preClassDiaryId], references: [id], onDelete: Cascade)
+  user  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([preClassDiaryId, userId])
+}
+
+model PostClassDiary {
+  id          String   @id @default(cuid())
+  userId      String
+  studentName String
+  timeTaken   String?
+  color       String?
+  taste       String?
+  state       String?
+  smoothness  String?
+  rating      Int? // Rubric 1-5 sao
+  imageUrl    String?
+  notes       String?
+  likes       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  PostForumComment[]
+  reactions PostClassReaction[]
+}
+
+model PostClassReaction {
+  id               String   @id @default(cuid())
+  postClassDiaryId String
+  userId           String
+  emoji            String
+  createdAt        DateTime @default(now())
+
+  diary PostClassDiary @relation(fields: [postClassDiaryId], references: [id], onDelete: Cascade)
+  user  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postClassDiaryId, userId])
+}
+
+model PostForumComment {
+  id               String   @id @default(cuid())
+  postClassDiaryId String
+  userId           String
+  studentName      String
+  content          String
+  createdAt        DateTime @default(now())
+
+  diary PostClassDiary @relation(fields: [postClassDiaryId], references: [id], onDelete: Cascade)
+}
+
+model LessonReflection {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  studentName String
+  emotion     String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

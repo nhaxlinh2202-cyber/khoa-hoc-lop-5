@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { serialize } from 'cookie';
 
 export async function POST() {
-  const serialized = serialize('auth_token', '', {
+  const serialized = serialize('khoahoc5_auth_token', '', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

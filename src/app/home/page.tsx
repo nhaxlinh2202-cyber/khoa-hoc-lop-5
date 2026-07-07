@@ -6,11 +6,10 @@ import { motion } from 'motion/react';
 import { LogOut, Play, Lock, Trophy, Star, Sparkles } from 'lucide-react';
 
 const steps = [
-  { id: 'hd1', progressKey: 'hd1', name: <>BÀI 1: LÀM SỮA CHUA 🥣</>, path: '/activity/hd1', color: 'bg-[#FF0000]', emoji: '🥛' },
-  { id: 'hd2', progressKey: 'hd2', name: <>BÀI 2: CHẤM ĐIỂM ⭐</>, path: '/activity/hd2', color: 'bg-[#FF00FF]', emoji: '🏅' },
-  { id: 'hd3', progressKey: 'hd3', name: <>BÀI 3: SOI VI KHUẨN 🔬</>, path: '/activity/hd3', color: 'bg-[#00FF00]', emoji: '🦠' },
-  { id: 'hd4', progressKey: 'hd4', name: <>BÀI 4: CỨU HỘ 🚑</>, path: '/activity/hd4', color: 'bg-[#FF8C00]', emoji: '💡' },
-  { id: 'assessment', progressKey: 'assessment', name: <>ÔN TẬP: TRÒ CHƠI 🎮</>, path: '/activity/assessment', color: 'bg-[#00E5FF]', emoji: '🎯' },
+  { id: 'truoc-lop', progressKey: 'truoc-lop', name: <>GIAI ĐOẠN 1: TRƯỚC LỚP 🔍</>, path: '/activity/truoc-lop', color: 'bg-[#FF0000]', emoji: '🧭' },
+  { id: 'trong-lop-t1', progressKey: 'trong-lop-t1', name: <>GIAI ĐOẠN 2: TIẾT 1 🔬</>, path: '/activity/trong-lop-t1', color: 'bg-[#FF00FF]', emoji: '🧬' },
+  { id: 'trong-lop-t2', progressKey: 'trong-lop-t2', name: <>GIAI ĐOẠN 2: TIẾT 2 🚑</>, path: '/activity/trong-lop-t2', color: 'bg-[#FF8C00]', emoji: '⏱️' },
+  { id: 'sau-lop', progressKey: 'sau-lop', name: <>GIAI ĐOẠN 3: SAU LỚP 🏆</>, path: '/activity/sau-lop', color: 'bg-[#00E5FF]', emoji: '🥣' },
 ];
 
 export default function HomePage() {
@@ -19,7 +18,7 @@ export default function HomePage() {
   const [isTeacher, setIsTeacher] = useState(false);
   const [studentName, setStudentName] = useState('Bé Yêu');
   const [progress, setProgress] = useState<Record<string, boolean>>({
-    hd1: false, hd2: false, hd3: false, hd4: false, assessment: false,
+    'truoc-lop': false, 'trong-lop-t1': false, 'trong-lop-t2': false, 'sau-lop': false,
   });
   const [loading, setLoading] = useState(true);
 
@@ -44,11 +43,10 @@ export default function HomePage() {
           if (pData.success && pData.progress?.completedSteps) {
             const completed = pData.progress.completedSteps as string[];
             setProgress({
-              hd1: completed.includes('hd1'),
-              hd2: completed.includes('hd2'),
-              hd3: completed.includes('hd3'),
-              hd4: completed.includes('hd4'),
-              assessment: completed.includes('assessment'),
+              'truoc-lop': completed.includes('truoc-lop'),
+              'trong-lop-t1': completed.includes('trong-lop-t1'),
+              'trong-lop-t2': completed.includes('trong-lop-t2'),
+              'sau-lop': completed.includes('sau-lop'),
             });
           }
         }
@@ -125,11 +123,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ACTIVITY CARDS */}
-        <section className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <section className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto w-full">
           {steps.map((item) => {
             const isCompleted = progress[item.progressKey];
-            const lockedPaths = ['/activity/hd2', '/activity/hd3', '/activity/hd4'];
+            const lockedPaths = ['/activity/trong-lop-t1', '/activity/trong-lop-t2', '/activity/sau-lop'];
             const isLocked = lockedPaths.includes(item.path) && !isTeacher;
 
             return (

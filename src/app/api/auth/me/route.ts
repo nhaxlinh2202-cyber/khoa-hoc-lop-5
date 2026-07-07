@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 export async function GET(req: Request) {
   try {
     const cookieStore = await cookies();
-    const token = cookieStore.get('auth_token')?.value;
+    const token = cookieStore.get('khoahoc5_auth_token')?.value;
 
     if (!token) {
       return NextResponse.json({ authenticated: false }, { status: 401 });

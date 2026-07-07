@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 
 async function getUser() {
   const cookieStore = await cookies();
-  const token = cookieStore.get('auth_token')?.value;
+  const token = cookieStore.get('khoahoc5_auth_token')?.value;
   if (!token) return null;
   try {
     return jwt.verify(token, JWT_SECRET) as any;
@@ -48,7 +48,7 @@ export async function PUT(req: Request) {
       where: { userId: user.userId },
       data: {
         completedSteps: steps.join(','),
-        percentage: Math.round((steps.length / 5) * 100)
+        percentage: Math.round((steps.length / 4) * 100)
       }
     });
   }

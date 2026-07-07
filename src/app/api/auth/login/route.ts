@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     );
 
     // Set HTTP-only Cookie
-    const serialized = serialize('auth_token', token, {
+    const serialized = serialize('khoahoc5_auth_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

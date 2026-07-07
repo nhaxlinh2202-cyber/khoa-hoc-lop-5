@@ -23,17 +23,17 @@ const FRIDGE_ITEMS = [
 ];
 
 const PICKLE_STEPS = [
-  { id: 'p1', text: 'Rửa sạch, phơi héo rau củ', type: 'pickle' },
-  { id: 'p2', text: 'Pha nước ấm pha muối và một chút đường', type: 'pickle' },
-  { id: 'p3', text: 'Xếp vào hũ, nén chặt và đậy thật kín', type: 'pickle' },
-  { id: 'p4', text: 'Vi khuẩn Lactic hoạt động tạo vị chua', type: 'pickle' }
+  { id: 'p1', text: 'Rửa sạch, phơi héo rau củ', type: 'pickle', image: '/images/pickle_step_1.png' },
+  { id: 'p2', text: 'Pha nước ấm pha muối và một chút đường', type: 'pickle', image: '/images/pickle_step_2.png' },
+  { id: 'p3', text: 'Xếp vào hũ, nén chặt và đậy thật kín', type: 'pickle', image: '/images/pickle_step_3.png' },
+  { id: 'p4', text: 'Vi khuẩn Lactic hoạt động tạo vị chua', type: 'pickle', image: '/images/pickle_step_4.png' }
 ];
 
 const YOGURT_STEPS = [
-  { id: 'y1', text: 'Pha sữa chua cái vào sữa tươi ấm', type: 'yogurt' },
-  { id: 'y2', text: 'Múc vào hũ, đậy nắp thật kín', type: 'yogurt' },
-  { id: 'y3', text: 'Ủ ấm (40-45°C) trong 6-8 tiếng', type: 'yogurt' },
-  { id: 'y4', text: 'Vi khuẩn Lactic lên men tạo độ chua và sệt', type: 'yogurt' }
+  { id: 'y1', text: 'Pha sữa chua cái vào sữa tươi ấm', type: 'yogurt', image: '/images/yogurt_step_1.png' },
+  { id: 'y2', text: 'Múc vào hũ, đậy nắp thật kín', type: 'yogurt', image: '/images/yogurt_step_2.png' },
+  { id: 'y3', text: 'Ủ ấm (40-45°C) trong 6-8 tiếng', type: 'yogurt', image: '/images/yogurt_step_3.png' },
+  { id: 'y4', text: 'Vi khuẩn Lactic lên men tạo độ chua và sệt', type: 'yogurt', image: '/images/yogurt_step_4.png' }
 ];
 
 const getEmoji = (name: string) => {
@@ -499,7 +499,7 @@ export default function TrongLopT1Page() {
                             <div 
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleDropOnSlot(idx)}
-                              className={`flex-none w-28 md:w-32 p-2 md:p-4 rounded-2xl border-2 md:border-4 ${step ? 'border-green-700 bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[4px_4px_0px_0px_#15803D] scale-105' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[10px] md:text-sm text-center flex flex-col items-center justify-center gap-1 md:gap-2 transition-all min-h-0 h-full`}
+                              className={`flex-none w-28 md:w-32 p-1.5 md:p-2.5 rounded-2xl border-2 md:border-4 ${step ? 'border-green-700 bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[4px_4px_0px_0px_#15803D] scale-105 z-10' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[9px] md:text-[11px] text-center flex flex-col items-center justify-center gap-1 transition-all min-h-0 h-full overflow-hidden`}
                               draggable={!!step}
                               onDragStart={(e) => {
                                 if (step) handleDragStart('slot', idx);
@@ -509,7 +509,12 @@ export default function TrongLopT1Page() {
                               <div className={`w-6 h-6 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 text-base md:text-xl font-black border-2 shadow-sm ${step ? 'bg-white text-green-700 border-green-700' : 'bg-gray-100 text-gray-400 border-gray-300'}`}>
                                 {idx + 1}
                               </div>
-                              {step ? <p className="leading-tight">{step.text}</p> : <p className="text-gray-400 font-bold uppercase text-[9px] md:text-xs">Kéo thả</p>}
+                              {step ? (
+                                <>
+                                  {step.image && <img src={step.image} alt={step.text} className="w-full flex-1 min-h-0 object-contain rounded-lg border-2 border-white/50 shadow-sm bg-white" style={{ maxHeight: '80px' }} />}
+                                  <p className="leading-tight shrink-0 flex items-center justify-center w-full min-h-[3rem] px-1">{step.text}</p>
+                                </>
+                              ) : <p className="text-gray-400 font-bold uppercase text-[9px] md:text-xs">Kéo thả</p>}
                             </div>
                             {idx < 3 && (
                               <div className="flex items-center justify-center shrink-0">
@@ -528,7 +533,7 @@ export default function TrongLopT1Page() {
                             <div 
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleDropOnSlot(idx)}
-                              className={`flex-none w-28 md:w-32 p-2 md:p-4 rounded-2xl border-2 md:border-4 ${step ? 'border-pink-700 bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-[4px_4px_0px_0px_#BE185D] scale-105' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[10px] md:text-sm text-center flex flex-col items-center justify-center gap-1 md:gap-2 transition-all min-h-0 h-full`}
+                              className={`flex-none w-28 md:w-32 p-1.5 md:p-2.5 rounded-2xl border-2 md:border-4 ${step ? 'border-pink-700 bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-[4px_4px_0px_0px_#BE185D] scale-105 z-10' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[9px] md:text-[11px] text-center flex flex-col items-center justify-center gap-1 transition-all min-h-0 h-full overflow-hidden`}
                               draggable={!!step}
                               onDragStart={(e) => {
                                 if (step) handleDragStart('slot', idx);
@@ -538,7 +543,12 @@ export default function TrongLopT1Page() {
                               <div className={`w-6 h-6 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 text-base md:text-xl font-black border-2 shadow-sm ${step ? 'bg-white text-pink-700 border-pink-700' : 'bg-gray-100 text-gray-400 border-gray-300'}`}>
                                 {idx + 1}
                               </div>
-                              {step ? <p className="leading-tight">{step.text}</p> : <p className="text-gray-400 font-bold uppercase text-[9px] md:text-xs">Kéo thả</p>}
+                              {step ? (
+                                <>
+                                  {step.image && <img src={step.image} alt={step.text} className="w-full flex-1 min-h-0 object-contain rounded-lg border-2 border-white/50 shadow-sm bg-white" style={{ maxHeight: '80px' }} />}
+                                  <p className="leading-tight shrink-0 flex items-center justify-center w-full min-h-[3rem] px-1">{step.text}</p>
+                                </>
+                              ) : <p className="text-gray-400 font-bold uppercase text-[9px] md:text-xs">Kéo thả</p>}
                             </div>
                             {idx < 3 && (
                               <div className="flex items-center justify-center shrink-0">

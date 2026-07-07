@@ -92,38 +92,38 @@ export default function Gateway() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FFFF00] font-sans text-black antialiased p-4 md:p-8 selection:bg-black selection:text-white">
+    <div className="h-screen flex flex-col bg-[#FFFF00] font-sans text-black antialiased p-2 md:p-4 selection:bg-black selection:text-white overflow-hidden">
       
       {/* ── Top Bar ── */}
-      <header className="shrink-0 bg-white px-6 py-4 rounded-[2rem] border-4 border-black shadow-[8px_8px_0px_0px_#000000] z-10 flex items-center justify-center mb-8 text-center">
-        <span className="font-display font-black text-xl md:text-3xl tracking-tighter text-black uppercase">
+      <header className="shrink-0 bg-white px-4 py-2 md:py-3 rounded-[2rem] border-4 border-black shadow-[6px_6px_0px_0px_#000000] z-10 flex items-center justify-center mb-3 md:mb-4 text-center">
+        <span className="font-display font-black text-lg md:text-2xl tracking-tighter text-black uppercase">
           KHOA HỌC LỚP 5: VI KHUẨN CÓ LỢI TRONG CHẾ BIẾN THỰC PHẨM
         </span>
       </header>
 
       {/* ── Split Layout ── */}
-      <main className="flex-1 flex flex-col lg:flex-row gap-8">
+      <main className="flex-1 flex flex-col lg:flex-row gap-4 h-full min-h-0">
         
         {/* ═══════════════ LEFT — STUDENT ═══════════════ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex-1 relative flex flex-col items-center justify-center p-8 bg-[#00E5FF] rounded-[3rem] border-4 border-black shadow-[12px_12px_0px_0px_#FF00FF] z-10"
+          className="flex-1 relative flex flex-col items-center justify-center p-4 md:p-6 bg-[#00E5FF] rounded-[2rem] border-4 border-black shadow-[8px_8px_0px_0px_#FF00FF] z-10 overflow-y-auto"
         >
-          <div className="flex flex-col items-center text-center space-y-6 w-full max-w-sm">
+          <div className="flex flex-col items-center text-center space-y-4 w-full max-w-sm">
             
             <div className="relative">
-              <div className="relative p-6 bg-white rounded-full shadow-[6px_6px_0px_0px_#000000] border-4 border-black transform transition-transform hover:scale-110 hover:rotate-6 duration-300">
-                <GraduationCap className="w-16 h-16 text-[#0000FF]" />
+              <div className="relative p-4 md:p-5 bg-white rounded-full shadow-[4px_4px_0px_0px_#000000] border-4 border-black transform transition-transform hover:scale-110 hover:rotate-6 duration-300">
+                <GraduationCap className="w-10 h-10 md:w-12 md:h-12 text-[#0000FF]" />
               </div>
-              <Star className="absolute -top-4 -right-4 w-10 h-10 text-[#FFFF00] fill-[#FFFF00] animate-spin-slow" />
+              <Star className="absolute -top-3 -right-3 w-8 h-8 text-[#FFFF00] fill-[#FFFF00] animate-spin-slow" />
             </div>
 
-            <div className="space-y-2">
-              <span className="font-black inline-block px-4 py-1.5 bg-[#FFFF00] border-2 border-black rounded-full text-sm uppercase">
+            <div className="space-y-1 md:space-y-2">
+              <span className="font-black inline-block px-3 py-1 bg-[#FFFF00] border-2 border-black rounded-full text-xs md:text-sm uppercase">
                 Dành cho Học sinh
               </span>
-              <h2 className="font-display font-black text-4xl lg:text-5xl text-black uppercase drop-shadow-md">
+              <h2 className="font-display font-black text-3xl lg:text-4xl text-black uppercase drop-shadow-md">
                 BÉ ĐÃ SẴN SÀNG?
               </h2>
             </div>
@@ -138,7 +138,7 @@ export default function Gateway() {
                   exit={{ opacity: 0, scale: 0.9 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full inline-flex items-center justify-center space-x-3 px-8 py-5 bg-[#00FF00] text-black border-4 border-black rounded-3xl text-xl font-black uppercase shadow-[6px_6px_0px_0px_#000000] hover:bg-[#00CC00] transition-colors"
+                  className="w-full inline-flex items-center justify-center space-x-3 px-6 py-4 md:py-5 bg-[#00FF00] text-black border-4 border-black rounded-3xl text-lg md:text-xl font-black uppercase shadow-[4px_4px_0px_0px_#000000] hover:bg-[#00CC00] transition-colors"
                 >
                   <span>BẮT ĐẦU HỌC NÀO!</span>
                   <ArrowRight className="w-6 h-6" />
@@ -199,19 +199,19 @@ export default function Gateway() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex-1 relative flex flex-col items-center justify-center p-8 bg-[#FF00FF] rounded-[3rem] border-4 border-black shadow-[12px_12px_0px_0px_#00E5FF] z-10"
+          className="flex-1 relative flex flex-col items-center justify-center p-4 md:p-6 bg-[#FF00FF] rounded-[2rem] border-4 border-black shadow-[8px_8px_0px_0px_#00E5FF] z-10 overflow-y-auto"
         >
-          <div className="flex flex-col items-center text-center space-y-6 w-full max-w-sm">
+          <div className="flex flex-col items-center text-center space-y-4 w-full max-w-sm">
             
-            <div className="relative p-6 bg-white rounded-full shadow-[6px_6px_0px_0px_#000000] border-4 border-black transform transition-transform hover:scale-110 hover:-rotate-6 duration-300">
-              <ShieldCheck className="w-16 h-16 text-[#FF0000]" />
+            <div className="relative p-4 md:p-5 bg-white rounded-full shadow-[4px_4px_0px_0px_#000000] border-4 border-black transform transition-transform hover:scale-110 hover:-rotate-6 duration-300">
+              <ShieldCheck className="w-10 h-10 md:w-12 md:h-12 text-[#FF0000]" />
             </div>
 
-            <div className="space-y-2">
-              <span className="font-black inline-block px-4 py-1.5 bg-white border-2 border-black rounded-full text-sm uppercase">
+            <div className="space-y-1 md:space-y-2">
+              <span className="font-black inline-block px-3 py-1 bg-white border-2 border-black rounded-full text-xs md:text-sm uppercase">
                 Khu vực Quản lý
               </span>
-              <h2 className="font-display font-black text-4xl lg:text-5xl text-white uppercase drop-shadow-md">
+              <h2 className="font-display font-black text-3xl lg:text-4xl text-white uppercase drop-shadow-md">
                 DÀNH CHO GIÁO VIÊN
               </h2>
             </div>
@@ -226,7 +226,7 @@ export default function Gateway() {
                   exit={{ opacity: 0 }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full inline-flex items-center justify-center space-x-3 px-8 py-5 bg-black text-white border-4 border-white rounded-3xl text-xl font-black uppercase shadow-[6px_6px_0px_0px_#FFFFFF] hover:bg-gray-900 transition-colors"
+                  className="w-full inline-flex items-center justify-center space-x-3 px-6 py-4 md:py-5 bg-black text-white border-4 border-white rounded-3xl text-lg md:text-xl font-black uppercase shadow-[4px_4px_0px_0px_#FFFFFF] hover:bg-gray-900 transition-colors"
                 >
                   <KeyRound className="w-6 h-6" />
                   <span>NHẬP MÃ PIN</span>

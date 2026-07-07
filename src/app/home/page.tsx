@@ -81,7 +81,7 @@ export default function HomePage() {
           <div className="w-10 h-10 rounded-full bg-[#FF0000] border-2 border-black flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white animate-pulse" />
           </div>
-          <span className="font-black text-2xl md:text-3xl text-black uppercase tracking-tight">KHOA HỌC 5</span>
+          <span className="font-black text-lg md:text-2xl text-black uppercase tracking-tight">KHOA HỌC LỚP 5: VI KHUẨN CÓ LỢI TRONG CHẾ BIẾN THỰC PHẨM</span>
         </div>
         
         <motion.button

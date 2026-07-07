@@ -366,7 +366,7 @@ export default function SauLopPage() {
             <button onClick={() => router.push('/home')} className="w-10 h-10 md:w-12 md:h-12 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[4px_4px_0px_0px_#000000] shrink-0 hover:bg-pink-100 group">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-black group-hover:-translate-x-1 transition-transform" />
             </button>
-            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 3: SAU LỚP</h1>
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block py-1 leading-relaxed">GIAI ĐOẠN 3: SAU LỚP</h1>
           </div>
           
           {/* TABS CHUYỂN HOẠT ĐỘNG */}

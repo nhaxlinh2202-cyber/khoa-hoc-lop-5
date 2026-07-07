@@ -312,7 +312,7 @@ export default function TrongLopT1Page() {
             <button onClick={() => router.push('/home')} className="w-10 h-10 md:w-12 md:h-12 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-105 shadow-[4px_4px_0px_0px_#000000] shrink-0">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-black" />
             </button>
-            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 2: TIẾT 1</h1>
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block py-1 leading-relaxed">GIAI ĐOẠN 2: TIẾT 1</h1>
           </div>
           
           {/* TABS CHUYỂN HOẠT ĐỘNG */}

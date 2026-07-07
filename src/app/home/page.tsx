@@ -6,17 +6,17 @@ import { motion } from 'motion/react';
 import { LogOut, Play, Lock, Trophy, Star, Sparkles } from 'lucide-react';
 
 const steps = [
-  { id: 'truoc-lop', progressKey: 'truoc-lop', name: <>GIAI ĐOẠN 1: TRƯỚC LỚP 🔍</>, path: '/activity/truoc-lop', color: 'bg-[#FF0000]', emoji: '🧭' },
-  { id: 'trong-lop-t1', progressKey: 'trong-lop-t1', name: <>GIAI ĐOẠN 2: TIẾT 1 🔬</>, path: '/activity/trong-lop-t1', color: 'bg-[#FF00FF]', emoji: '🧬' },
-  { id: 'trong-lop-t2', progressKey: 'trong-lop-t2', name: <>GIAI ĐOẠN 2: TIẾT 2 🚑</>, path: '/activity/trong-lop-t2', color: 'bg-[#FF8C00]', emoji: '⏱️' },
-  { id: 'sau-lop', progressKey: 'sau-lop', name: <>GIAI ĐOẠN 3: SAU LỚP 🏆</>, path: '/activity/sau-lop', color: 'bg-[#00E5FF]', emoji: '🥣' },
+  { id: 'truoc-lop', progressKey: 'truoc-lop', name: <>GIAI ĐOẠN 1: TRƯỚC LỚP</>, path: '/activity/truoc-lop', color: 'bg-[#FF0000]', emoji: '🧭' },
+  { id: 'trong-lop-t1', progressKey: 'trong-lop-t1', name: <>GIAI ĐOẠN 2: TIẾT 1</>, path: '/activity/trong-lop-t1', color: 'bg-[#FF00FF]', emoji: '🧬' },
+  { id: 'trong-lop-t2', progressKey: 'trong-lop-t2', name: <>GIAI ĐOẠN 2: TIẾT 2</>, path: '/activity/trong-lop-t2', color: 'bg-[#FF8C00]', emoji: '⏱️' },
+  { id: 'sau-lop', progressKey: 'sau-lop', name: <>GIAI ĐOẠN 3: SAU LỚP</>, path: '/activity/sau-lop', color: 'bg-[#00E5FF]', emoji: '🥣' },
 ];
 
 export default function HomePage() {
   const router = useRouter();
   
   const [isTeacher, setIsTeacher] = useState(false);
-  const [studentName, setStudentName] = useState('Bé Yêu');
+  const [studentName, setStudentName] = useState('Lớp 5A');
   const [progress, setProgress] = useState<Record<string, boolean>>({
     'truoc-lop': false, 'trong-lop-t1': false, 'trong-lop-t2': false, 'sau-lop': false,
   });
@@ -34,7 +34,9 @@ export default function HomePage() {
           const meData = await meRes.json();
           if (meData.authenticated) {
             setIsTeacher(meData.user.role === 'teacher');
-            if (meData.user.role === 'student') setStudentName(meData.user.name);
+            if (meData.user.role === 'student') {
+              setStudentName(meData.user.name === 'Bé Yêu' ? 'Lớp 5A' : meData.user.name);
+            }
           } else router.push('/');
         } else router.push('/');
 
@@ -126,7 +128,7 @@ export default function HomePage() {
         <section className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto w-full">
           {steps.map((item) => {
             const isCompleted = progress[item.progressKey];
-            const lockedPaths = ['/activity/trong-lop-t1', '/activity/trong-lop-t2', '/activity/sau-lop'];
+            const lockedPaths = ['/activity/trong-lop-t1', '/activity/trong-lop-t2'];
             const isLocked = lockedPaths.includes(item.path) && !isTeacher;
 
             return (
@@ -169,7 +171,7 @@ export default function HomePage() {
                         : 'bg-black border-black text-white shadow-md'
                       }`}
                   >
-                    {isCompleted ? 'CHƠI LẠI' : 'VÀO HỌC'} 
+                    {isCompleted ? 'VÀO HỌC LẠI' : 'VÀO HỌC'} 
                     {!isLocked && <Play className="w-4 h-4 fill-current" />}
                   </motion.button>
                 </div>

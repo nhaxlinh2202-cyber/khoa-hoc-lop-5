@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, Search, Check, RefreshCcw, Dices, User, ArrowRight, ArrowDown, BookOpen, X } from 'lucide-react';
+import Confetti from 'react-confetti';
 
 declare global {
   namespace JSX {
@@ -66,6 +67,11 @@ export default function TrongLopT1Page() {
 
   const [currentActivity, setCurrentActivity] = useState<number>(1);
   const [showConclusion, setShowConclusion] = useState(false);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState<'success'|'error'>('success');
+  const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
     // Tải thư viện 3D
@@ -187,13 +193,27 @@ export default function TrongLopT1Page() {
     const isPickle = activeTab === 'pickle';
     const slots = isPickle ? pickleSlots : yogurtSlots;
     
-    if (slots.includes(null)) return alert('Hãy điền kín các ô trống trong sơ đồ trước nhé! 🧩');
+    if (slots.includes(null)) {
+      setPopupType('error');
+      setPopupMessage('Hãy điền kín các ô trống trong sơ đồ trước nhé! 🧩');
+      setShowPopup(true);
+      return;
+    }
     
     const prefix = isPickle ? 'p' : 'y';
     const isCorrect = slots.every((step, idx) => step?.id === `${prefix}${idx + 1}`);
     
-    if (isCorrect) alert(`Hoan hô! Sơ đồ ${isPickle ? 'Muối dưa' : 'Làm sữa chua'} chính xác 100% 🎉`);
-    else alert('Chưa đúng rồi, hãy kiểm tra lại và thử đổi chỗ các thẻ nhé! 🤔');
+    if (isCorrect) {
+      setPopupType('success');
+      setPopupMessage(`Hoan hô! Sơ đồ ${isPickle ? 'Muối dưa' : 'Làm sữa chua'} chính xác 100% 🎉`);
+      setShowPopup(true);
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
+    } else {
+      setPopupType('error');
+      setPopupMessage('Chưa đúng rồi, hãy kiểm tra lại và thử đổi chỗ các thẻ nhé! 🤔');
+      setShowPopup(true);
+    }
   };
 
   const resetActivity2 = () => {
@@ -249,6 +269,34 @@ export default function TrongLopT1Page() {
 
   return (
     <div className="w-full h-screen bg-[#FFFF00] flex items-center justify-center p-2 sm:p-4 font-display overflow-hidden">
+      {showConfetti && <div className="fixed inset-0 z-[9999] pointer-events-none"><Confetti width={typeof window !== 'undefined' ? window.innerWidth : 1000} height={typeof window !== 'undefined' ? window.innerHeight : 1000} /></div>}
+      
+      {showPopup && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className={`bg-white border-4 md:border-8 border-black rounded-3xl w-full max-w-md shadow-[8px_8px_0px_0px_${popupType === 'success' ? '#00FF00' : '#FF0000'}] animate-in zoom-in-50 duration-300 flex flex-col overflow-hidden`}>
+            <div className={`p-4 border-b-4 md:border-b-8 border-black flex justify-center items-center ${popupType === 'success' ? 'bg-[#00FF00]' : 'bg-[#FF0000]'}`}>
+              <h2 className="text-black font-black text-xl md:text-2xl uppercase tracking-wider">
+                {popupType === 'success' ? 'CHÍNH XÁC! 🏆' : 'KẾT QUẢ ⚠️'}
+              </h2>
+            </div>
+            <div className="p-6 md:p-8 flex flex-col gap-6 items-center text-center bg-[#F5FBFF]">
+              <div className="text-4xl md:text-6xl animate-bounce">
+                {popupType === 'success' ? '🎉' : '🤔'}
+              </div>
+              <p className="font-bold text-lg md:text-xl text-gray-800 leading-relaxed">
+                {popupMessage}
+              </p>
+              <button 
+                onClick={() => setShowPopup(false)}
+                className={`w-full py-3 md:py-4 border-4 border-black font-black uppercase text-lg rounded-2xl hover:-translate-y-1 transition-transform shadow-[4px_4px_0px_0px_#000000] text-white ${popupType === 'success' ? 'bg-[#FF00FF]' : 'bg-[#FF8C00]'}`}
+              >
+                TIẾP TỤC
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div 
         className="w-full bg-white border-4 md:border-8 border-black rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col relative overflow-hidden"
         style={{ 
@@ -264,7 +312,7 @@ export default function TrongLopT1Page() {
             <button onClick={() => router.push('/home')} className="w-10 h-10 md:w-12 md:h-12 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-105 shadow-[4px_4px_0px_0px_#000000] shrink-0">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-black" />
             </button>
-            <h1 className="text-xl md:text-3xl lg:text-4xl font-black uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 2: TIẾT 1</h1>
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 2: TIẾT 1</h1>
           </div>
           
           {/* TABS CHUYỂN HOẠT ĐỘNG */}
@@ -434,24 +482,24 @@ export default function TrongLopT1Page() {
                     <button onClick={resetActivity2} className="flex-none w-full py-2 bg-gray-200 text-gray-700 font-black rounded-xl text-[10px] md:text-xs flex flex-col items-center justify-center gap-1 hover:bg-gray-300 shadow-[4px_4px_0px_0px_#9CA3AF] transition-transform hover:-translate-y-1">
                       <RefreshCcw className="w-4 h-4 md:w-6 md:h-6 text-gray-600" /> ĐẶT LẠI
                     </button>
-                    <button onClick={checkProcesses} className="flex-none w-full py-3 md:py-4 bg-black text-white font-black rounded-xl text-xs md:text-base flex flex-col items-center justify-center gap-1 hover:bg-gray-800 shadow-[4px_4px_0px_0px_#FF8C00] transition-transform hover:-translate-y-1">
-                      <Check className="w-5 h-5 md:w-8 md:h-8 text-[#00FF00]" /> KIỂM<br/>TRA
+                    <button onClick={checkProcesses} className="flex-none w-full py-2 md:py-2 bg-black text-white font-black rounded-xl text-xs md:text-sm flex flex-col items-center justify-center gap-1 hover:bg-gray-800 shadow-[4px_4px_0px_0px_#FF8C00] transition-transform hover:-translate-y-1">
+                      <Check className="w-5 h-5 md:w-6 md:h-6 text-[#00FF00]" /> KIỂM TRA
                     </button>
                   </div>
                 </div>
 
                 {/* Panel Phải - Màn hình Sơ đồ & Kho Thẻ */}
-                <div className="flex-1 flex flex-col min-h-0 h-full gap-2 md:gap-4">
+                <div className="flex-1 flex flex-col min-h-0 h-full gap-2 md:gap-2">
                   {/* SƠ ĐỒ ĐANG HOẠT ĐỘNG */}
                   {activeTab === 'pickle' ? (
                     <div className="flex-[2] min-h-0 bg-gradient-to-b from-green-50 to-white p-2 md:p-4 rounded-2xl border-4 border-green-200 shadow-sm animate-in fade-in flex items-center justify-center overflow-x-auto w-full relative">
-                      <div className="flex flex-row items-center justify-start md:justify-center min-w-max h-full px-2 gap-2 md:gap-4">
+                      <div className="flex flex-row items-center justify-start md:justify-center min-w-max h-full px-2 gap-1 md:gap-1">
                         {pickleSlots.map((step, idx) => (
                           <React.Fragment key={`p-slot-${idx}`}>
                             <div 
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleDropOnSlot(idx)}
-                              className={`flex-none w-28 md:w-40 p-2 md:p-4 rounded-2xl border-2 md:border-4 ${step ? 'border-green-700 bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[4px_4px_0px_0px_#15803D] scale-105' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[10px] md:text-sm text-center flex flex-col items-center justify-center gap-1 md:gap-2 transition-all min-h-0 h-full`}
+                              className={`flex-none w-28 md:w-32 p-2 md:p-4 rounded-2xl border-2 md:border-4 ${step ? 'border-green-700 bg-gradient-to-br from-green-400 to-green-600 text-white shadow-[4px_4px_0px_0px_#15803D] scale-105' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[10px] md:text-sm text-center flex flex-col items-center justify-center gap-1 md:gap-2 transition-all min-h-0 h-full`}
                               draggable={!!step}
                               onDragStart={(e) => {
                                 if (step) handleDragStart('slot', idx);
@@ -465,7 +513,7 @@ export default function TrongLopT1Page() {
                             </div>
                             {idx < 3 && (
                               <div className="flex items-center justify-center shrink-0">
-                                <ArrowRight className="w-5 h-5 md:w-8 md:h-8 text-green-500 animate-pulse" strokeWidth={4} />
+                                <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-green-500 animate-pulse" strokeWidth={4} />
                               </div>
                             )}
                           </React.Fragment>
@@ -474,13 +522,13 @@ export default function TrongLopT1Page() {
                     </div>
                   ) : (
                     <div className="flex-[2] min-h-0 bg-gradient-to-b from-pink-50 to-white p-2 md:p-4 rounded-2xl border-4 border-pink-200 shadow-sm animate-in fade-in flex items-center justify-center overflow-x-auto w-full relative">
-                      <div className="flex flex-row items-center justify-start md:justify-center min-w-max h-full px-2 gap-2 md:gap-4">
+                      <div className="flex flex-row items-center justify-start md:justify-center min-w-max h-full px-2 gap-1 md:gap-1">
                         {yogurtSlots.map((step, idx) => (
                           <React.Fragment key={`y-slot-${idx}`}>
                             <div 
                               onDragOver={(e) => e.preventDefault()}
                               onDrop={() => handleDropOnSlot(idx)}
-                              className={`flex-none w-28 md:w-40 p-2 md:p-4 rounded-2xl border-2 md:border-4 ${step ? 'border-pink-700 bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-[4px_4px_0px_0px_#BE185D] scale-105' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[10px] md:text-sm text-center flex flex-col items-center justify-center gap-1 md:gap-2 transition-all min-h-0 h-full`}
+                              className={`flex-none w-28 md:w-32 p-2 md:p-4 rounded-2xl border-2 md:border-4 ${step ? 'border-pink-700 bg-gradient-to-br from-pink-400 to-pink-600 text-white shadow-[4px_4px_0px_0px_#BE185D] scale-105' : 'border-dashed border-gray-300 bg-gray-50/50 shadow-inner'} cursor-grab active:cursor-grabbing hover:-translate-y-1 font-bold text-[10px] md:text-sm text-center flex flex-col items-center justify-center gap-1 md:gap-2 transition-all min-h-0 h-full`}
                               draggable={!!step}
                               onDragStart={(e) => {
                                 if (step) handleDragStart('slot', idx);
@@ -494,7 +542,7 @@ export default function TrongLopT1Page() {
                             </div>
                             {idx < 3 && (
                               <div className="flex items-center justify-center shrink-0">
-                                <ArrowRight className="w-5 h-5 md:w-8 md:h-8 text-pink-500 animate-pulse" strokeWidth={4} />
+                                <ArrowRight className="w-5 h-5 md:w-6 md:h-6 text-pink-500 animate-pulse" strokeWidth={4} />
                               </div>
                             )}
                           </React.Fragment>
@@ -515,13 +563,13 @@ export default function TrongLopT1Page() {
                           <p className="text-center text-gray-400 font-bold italic py-4">Kho thẻ trống</p>
                         </div>
                       ) : (
-                        <div className="flex flex-wrap justify-center gap-2 md:gap-4 h-full items-center">
+                        <div className="flex flex-wrap justify-center gap-1 md:gap-2 h-full items-center">
                           {(activeTab === 'pickle' ? pickleBank : yogurtBank).map((step, idx) => (
                             <div 
                               key={`bank-${step.id}`}
                               draggable
                               onDragStart={() => handleDragStart('bank', idx)}
-                              className="w-[45%] md:w-[22%] p-2 md:p-3 rounded-xl bg-white text-gray-700 font-bold text-center cursor-grab active:cursor-grabbing hover:-translate-y-1 transition-transform flex items-center justify-center text-[10px] md:text-sm shadow-[4px_4px_0px_0px_#D1D5DB] hover:shadow-[4px_4px_0px_0px_#9CA3AF] border-2 border-gray-400 hover:border-gray-500"
+                              className="w-[45%] md:w-[23%] p-1 md:p-2 rounded-xl bg-white text-gray-700 font-bold text-center cursor-grab active:cursor-grabbing hover:-translate-y-1 transition-transform flex items-center justify-center text-[9px] md:text-xs shadow-[4px_4px_0px_0px_#D1D5DB] hover:shadow-[4px_4px_0px_0px_#9CA3AF] border-2 border-gray-400 hover:border-gray-500"
                             >
                               <p className="leading-tight">{step.text}</p>
                             </div>
@@ -755,7 +803,7 @@ export default function TrongLopT1Page() {
                       onClick={() => setShowConclusion(false)}
                       className="bg-[#00E5FF] hover:bg-blue-400 text-black font-black py-3 md:py-4 px-10 md:px-16 rounded-full border-4 border-black shadow-[4px_4px_0px_0px_#000000] hover:-translate-y-2 transition-transform text-lg md:text-2xl uppercase tracking-widest"
                     >
-                      BÉ ĐÃ HIỂU RÕ! 🚀
+                      ĐÃ HIỂU RÕ!
                     </button>
                   </div>
                 </motion.div>

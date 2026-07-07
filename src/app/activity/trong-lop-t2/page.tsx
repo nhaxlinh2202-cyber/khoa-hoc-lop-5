@@ -234,7 +234,7 @@ export default function TrongLopT2Page() {
             <button onClick={() => router.push('/home')} className="w-10 h-10 md:w-12 md:h-12 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-105 shadow-[4px_4px_0px_0px_#000000] shrink-0">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-black" />
             </button>
-            <h1 className="text-xl md:text-3xl lg:text-4xl font-black uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 2: TIẾT 2 🥛</h1>
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 2: TIẾT 2</h1>
           </div>
           
           {/* TABS CHUYỂN HOẠT ĐỘNG */}
@@ -315,7 +315,7 @@ export default function TrongLopT2Page() {
               
               <div className="relative z-10 flex flex-col gap-3 md:gap-5 flex-grow justify-center">
                 <h2 className="text-lg md:text-xl font-black uppercase text-white drop-shadow-md flex items-center gap-1 md:gap-2">
-                  <span className="text-2xl md:text-3xl">🥛</span> CẤP CỨU MẺ SỮA CHUA!
+                  <span className="text-2xl md:text-3xl">🥛</span> NHÓM 1: CẤP CỨU MẺ SỮA CHUA!
                 </h2>
                 
                 <div className="bg-white text-black p-3 md:p-4 rounded-xl font-bold text-xs md:text-sm leading-relaxed border-2 md:border-4 border-black shadow-[2px_2px_0px_0px_#000000]">
@@ -363,7 +363,7 @@ export default function TrongLopT2Page() {
               
               <div className="relative z-10 flex flex-col gap-3 md:gap-5 flex-grow justify-center">
                 <h2 className="text-lg md:text-xl font-black uppercase text-white drop-shadow-md flex items-center gap-1 md:gap-2">
-                  <span className="text-2xl md:text-3xl">🥒</span> BÍ KÍP DƯA MUỐI BẤT BẠI
+                  <span className="text-2xl md:text-3xl">🥒</span> NHÓM 2: BÍ KÍP DƯA MUỐI BẤT BẠI
                 </h2>
                 
                 <div className="bg-white text-black p-3 md:p-4 rounded-xl font-bold text-xs md:text-sm leading-relaxed border-2 md:border-4 border-black shadow-[2px_2px_0px_0px_#000000]">
@@ -437,7 +437,7 @@ export default function TrongLopT2Page() {
                 transform: `translate(${btnPos.x}px, ${btnPos.y}px)`,
                 touchAction: 'none'
               }}
-              className={`absolute bottom-4 right-4 w-14 h-14 md:w-16 md:h-16 bg-[#00E5FF]/50 backdrop-blur-md border-4 border-black rounded-full flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] z-[100] group cursor-grab active:cursor-grabbing hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] ${hasMovedBtn || isDraggingBtn ? '' : 'hover:-translate-y-1 transition-all'}`}
+              className={`absolute -top-3 -right-3 md:-top-5 md:-right-5 w-14 h-14 md:w-16 md:h-16 bg-[#00E5FF] border-4 border-black rounded-full flex items-center justify-center shadow-[4px_4px_0px_0px_rgba(0,0,0,0.5)] z-[100] group cursor-grab active:cursor-grabbing hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.5)] ${hasMovedBtn || isDraggingBtn ? '' : 'hover:-translate-y-1 transition-all'}`}
             >
               <Clock className="w-6 h-6 md:w-8 md:h-8 text-black group-hover:animate-spin" />
             </button>

@@ -50,8 +50,9 @@ export default function TruocLopPage() {
   const [commentContent, setCommentContent] = useState('');
 
   // Toggle View
+  // Toggle View
   const [isViewingForum, setIsViewingForum] = useState(false);
-
+  const [activeForm, setActiveForm] = useState<'none' | 'A' | 'B'>('none');
   useEffect(() => {
     fetchData();
   }, []);
@@ -207,7 +208,7 @@ export default function TruocLopPage() {
             <button onClick={() => router.push('/home')} className="w-10 h-10 md:w-14 md:h-14 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[4px_4px_0px_0px_#000000] shrink-0">
               <ArrowLeft className="w-6 h-6 md:w-8 md:h-8 text-black" />
             </button>
-            <h1 className="text-xl md:text-3xl font-black uppercase text-black tracking-tight hidden sm:block">GIAI ĐOẠN 1: TRƯỚC LỚP 🔍</h1>
+            <h1 className="text-xl md:text-3xl font-black font-sans uppercase text-black tracking-tight hidden sm:block">GIAI ĐOẠN 1: TRƯỚC LỚP</h1>
           </div>
 
           <button onClick={completeLesson} className="bg-[#00FF00] text-black px-4 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl font-black text-sm md:text-xl border-4 border-black shadow-[4px_4px_0px_0px_#000000] hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#000000] transition-all uppercase whitespace-nowrap">
@@ -218,73 +219,9 @@ export default function TruocLopPage() {
         {/* NỘI DUNG CŨ BÊN TRONG */}
         <main className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 bg-[#FFFF00]">
           {!isViewingForum ? (
-            <div className="max-w-6xl mx-auto space-y-8 pb-8">
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* CỘT TRÁI: NHÁNH A */}
-                <div className="bg-white border-4 border-black p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col">
-                  <h2 className="text-2xl font-black uppercase mb-2 text-[#FF00FF] flex items-center gap-2">THỰC TẾ 📸</h2>
-                  <p className="text-lg font-bold mb-6 border-b-2 border-gray-200 pb-4">Hãy mở tủ lạnh hoặc xuống bếp tìm xem nhà mình có món ăn lên men nào không nhé!</p>
-                  
-                  <div className="space-y-4 flex-1">
-                    <input value={foodNameA} onChange={e => setFoodNameA(e.target.value)} placeholder="Tên món ăn em tìm thấy là gì?" className="w-full p-4 border-4 border-black rounded-xl font-bold text-lg" />
-                    <input value={colorA} onChange={e => setColorA(e.target.value)} placeholder="Màu sắc của nó như thế nào?" className="w-full p-4 border-4 border-black rounded-xl font-bold text-lg" />
-                    <input value={stateA} onChange={e => setStateA(e.target.value)} placeholder="Trạng thái (Đặc, lỏng, mềm, cứng...)?" className="w-full p-4 border-4 border-black rounded-xl font-bold text-lg" />
-                    <input value={tasteA} onChange={e => setTasteA(e.target.value)} placeholder="Mùi vị của món ăn ra sao (Chua, ngọt, mặn...)?" className="w-full p-4 border-4 border-black rounded-xl font-bold text-lg" />
-                    
-                    {/* Khu vực tải ảnh */}
-                    <div className="border-4 border-dashed border-black rounded-xl p-4 text-center relative overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
-                      <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                      {!imagePreview ? (
-                        <div className="py-6 flex flex-col items-center gap-2">
-                          <Camera className="w-12 h-12 text-gray-400" />
-                          <p className="font-bold text-gray-500">Bấm để chụp hoặc tải ảnh món ăn lên <span className="text-red-500">(Bắt buộc)</span></p>
-                        </div>
-                      ) : (
-                        <div className="relative">
-                          <img src={imagePreview} alt="Preview" className="max-h-48 mx-auto rounded-lg border-2 border-black shadow-md" />
-                          <button onClick={(e) => { e.preventDefault(); setImageFile(null); setImagePreview(null); }} className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full border-2 border-black hover:bg-red-600 z-20 transition-transform hover:scale-110">
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <button disabled={isSubmitting} onClick={() => handleSubmit('A')} className="mt-6 w-full py-4 bg-black text-white font-black text-xl rounded-xl flex items-center justify-center gap-3 hover:bg-gray-800">
-                    {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Send className="w-6 h-6" /> NỘP BÀI</>}
-                  </button>
-                </div>
-
-                {/* CỘT PHẢI: NHÁNH B */}
-                <div className="bg-white border-4 border-black p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col">
-                  <h2 className="text-2xl font-black uppercase mb-2 text-[#00FF00] flex items-center gap-2">KHÁM PHÁ SỐ 💡</h2>
-                  <p className="text-lg font-bold mb-6 border-b-2 border-gray-200 pb-4">Nhà em không có món nào ư? Không sao, hãy mở tủ lạnh phép thuật của lớp học!</p>
-                  
-                  <div className="space-y-6 flex-1">
-                    <button onClick={() => setShowFridge(true)} className="w-full py-4 bg-[#00E5FF] border-4 border-black rounded-2xl shadow-[4px_4px_0px_0px_#000000] font-black text-xl hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#000000] transition-all flex justify-center items-center gap-3">
-                      Mở Tủ Lạnh Phép Thuật ngay! 🧊
-                    </button>
-
-                    <div className="w-full p-4 border-4 border-dashed border-black rounded-xl font-bold text-lg flex items-center justify-between bg-gray-50">
-                      {selectedFoodB ? (
-                         <span className="flex items-center gap-2 text-2xl">{selectedFoodB.emoji} Đã chọn: <span className="text-[#FF0000] uppercase font-black">{selectedFoodB.name}</span></span>
-                      ) : (
-                         <span className="text-gray-500">Chưa chọn món nào từ Tủ Lạnh...</span>
-                      )}
-                      <button onClick={() => setShowFridge(true)} className="bg-black text-white px-4 py-2 rounded-lg font-black"><Search className="w-5 h-5 inline" /> CHỌN LẠI</button>
-                    </div>
-                    <textarea value={reasonB} onChange={e => setReasonB(e.target.value)} placeholder="Vì sao em tò mò về món ăn này?" rows={3} className="w-full p-4 border-4 border-black rounded-xl font-bold text-lg flex-1 min-h-[120px]" />
-                  </div>
-
-                  <button disabled={isSubmitting} onClick={() => handleSubmit('B')} className="mt-6 w-full py-4 bg-black text-white font-black text-xl rounded-xl flex items-center justify-center gap-3 hover:bg-gray-800">
-                    {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Send className="w-6 h-6" /> NỘP BÀI</>}
-                  </button>
-                </div>
-              </div>
-
+            <div className="max-w-6xl mx-auto pb-4 md:pb-8">
               {/* Banner dẫn vào Diễn đàn khi đang ở Form */}
-              <div className="mt-8 border-4 border-black rounded-3xl p-6 bg-[#00E5FF] shadow-[8px_8px_0px_0px_#FF00FF] flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="mb-4 md:mb-8 border-4 border-black rounded-3xl p-6 bg-[#00E5FF] shadow-[8px_8px_0px_0px_#FF00FF] flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
                   <h3 className="text-2xl font-black uppercase text-black flex items-center gap-2">💬 DIỄN ĐÀN LỚP HỌC</h3>
                   <p className="font-bold text-gray-800">Em chưa có ý tưởng? Khám phá xem các bạn khác đã săn được món ăn gì nhé!</p>
@@ -293,6 +230,101 @@ export default function TruocLopPage() {
                   VÀO XEM NGAY 🚀
                 </button>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
+                {/* Nút chọn THỰC TẾ */}
+                <div className="bg-white border-4 border-black p-6 md:p-8 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col hover:-translate-y-2 transition-transform cursor-pointer group" onClick={() => setActiveForm('A')}>
+                  <h2 className="text-2xl md:text-3xl font-black uppercase mb-4 text-[#FF00FF] flex items-center justify-center gap-2 group-hover:scale-105 transition-transform">THỰC TẾ 📷</h2>
+                  <p className="text-base md:text-lg font-bold mb-6 text-center text-gray-700 flex-1">Hãy mở tủ lạnh hoặc xuống bếp tìm xem nhà mình có món ăn lên men nào không nhé!</p>
+                  <button className="w-full py-3 md:py-4 bg-[#FF00FF] text-white font-black text-lg md:text-xl rounded-xl flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_#000000] group-hover:bg-pink-600 transition-colors">
+                    <Send className="w-5 h-5 md:w-6 md:h-6" /> NỘP BÀI
+                  </button>
+                </div>
+
+                {/* Nút chọn KHÁM PHÁ SỐ */}
+                <div className="bg-white border-4 border-black p-6 md:p-8 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col hover:-translate-y-2 transition-transform cursor-pointer group" onClick={() => setActiveForm('B')}>
+                  <h2 className="text-2xl md:text-3xl font-black uppercase mb-4 text-[#00FF00] flex items-center justify-center gap-2 group-hover:scale-105 transition-transform">KHÁM PHÁ SỐ 💡</h2>
+                  <p className="text-base md:text-lg font-bold mb-6 text-center text-gray-700 flex-1">Nhà em không có món nào ư? Không sao, hãy mở tủ lạnh phép thuật của lớp học!</p>
+                  <button className="w-full py-3 md:py-4 bg-[#00FF00] text-black font-black text-lg md:text-xl rounded-xl flex items-center justify-center gap-2 border-2 border-black shadow-[4px_4px_0px_0px_#000000] group-hover:bg-green-500 transition-colors">
+                    <Send className="w-5 h-5 md:w-6 md:h-6" /> NỘP BÀI
+                  </button>
+                </div>
+              </div>
+
+              {activeForm !== 'none' && (
+                <div className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4 backdrop-blur-sm" onClick={(e) => { if (e.target === e.currentTarget) setActiveForm('none'); }}>
+                  {activeForm === 'A' && (
+                    <div className="bg-white border-4 border-black p-4 md:p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-in fade-in zoom-in duration-200">
+                      {/* CỘT TRÁI: NHÁNH A */}
+                  <div className="flex items-center justify-between mb-1 md:mb-2">
+                    <h2 className="text-xl md:text-2xl font-black uppercase text-[#FF00FF] flex items-center gap-2">THỰC TẾ 📷</h2>
+                    <button onClick={() => setActiveForm('none')} className="text-sm font-bold bg-gray-200 px-3 py-1 rounded-lg border-2 border-black hover:bg-gray-300">◀ Quay lại</button>
+                  </div>
+                  <p className="text-sm md:text-base font-bold mb-2 md:mb-3 border-b-2 border-gray-200 pb-1 md:pb-2">Hãy mở tủ lạnh hoặc xuống bếp tìm xem nhà mình có món ăn lên men nào không nhé!</p>
+                  
+                  <div className="space-y-1.5 md:space-y-2 flex-1">
+                    <input value={foodNameA} onChange={e => setFoodNameA(e.target.value)} placeholder="Tên món ăn em tìm thấy là gì?" className="w-full p-1.5 md:p-2 border-2 md:border-4 border-black rounded-xl font-bold text-sm md:text-base" />
+                    <input value={colorA} onChange={e => setColorA(e.target.value)} placeholder="Màu sắc của nó như thế nào?" className="w-full p-1.5 md:p-2 border-2 md:border-4 border-black rounded-xl font-bold text-sm md:text-base" />
+                    <input value={stateA} onChange={e => setStateA(e.target.value)} placeholder="Trạng thái (Đặc, lỏng, mềm, cứng...)?" className="w-full p-1.5 md:p-2 border-2 md:border-4 border-black rounded-xl font-bold text-sm md:text-base" />
+                    <input value={tasteA} onChange={e => setTasteA(e.target.value)} placeholder="Mùi vị của món ăn ra sao (Chua, ngọt, mặn...)?" className="w-full p-1.5 md:p-2 border-2 md:border-4 border-black rounded-xl font-bold text-sm md:text-base" />
+                    
+                    {/* Khu vực tải ảnh */}
+                    <div className="border-2 md:border-4 border-dashed border-black rounded-xl p-1.5 md:p-2 text-center relative overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer">
+                      <input type="file" accept="image/*" onChange={handleImageChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                      {!imagePreview ? (
+                        <div className="py-1 md:py-2 flex flex-col items-center gap-1">
+                          <Camera className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+                          <p className="font-bold text-xs md:text-sm text-gray-500">Bấm để chụp hoặc tải ảnh món ăn lên <span className="text-red-500">(Bắt buộc)</span></p>
+                        </div>
+                      ) : (
+                        <div className="relative">
+                          <img src={imagePreview} alt="Preview" className="max-h-20 md:max-h-24 mx-auto rounded-lg border-2 border-black shadow-sm" />
+                          <button onClick={(e) => { e.preventDefault(); setImageFile(null); setImagePreview(null); }} className="absolute top-1 right-1 bg-red-500 text-white p-1 md:p-2 rounded-full border-2 border-black hover:bg-red-600 z-20 transition-transform hover:scale-110">
+                            <X className="w-3 h-3 md:w-4 md:h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <button disabled={isSubmitting} onClick={() => handleSubmit('A')} className="mt-2 md:mt-3 w-full py-1.5 md:py-2 bg-black text-white font-black text-base md:text-lg rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800">
+                    {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-4 h-4 md:w-5 md:h-5" /> NỘP BÀI</>}
+                  </button>
+                </div>
+                  )}
+
+                  {activeForm === 'B' && (
+                    <div className="bg-white border-4 border-black p-4 md:p-6 rounded-3xl shadow-[8px_8px_0px_0px_#000000] flex flex-col w-full max-w-2xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-in fade-in zoom-in duration-200">
+                      {/* CỘT PHẢI: NHÁNH B */}
+                  <div className="flex items-center justify-between mb-1 md:mb-2">
+                    <h2 className="text-xl md:text-2xl font-black uppercase text-[#00FF00] flex items-center gap-2">KHÁM PHÁ SỐ 💡</h2>
+                    <button onClick={() => setActiveForm('none')} className="text-sm font-bold bg-gray-200 px-3 py-1 rounded-lg border-2 border-black hover:bg-gray-300">◀ Quay lại</button>
+                  </div>
+                  <p className="text-sm md:text-base font-bold mb-2 md:mb-3 border-b-2 border-gray-200 pb-1 md:pb-2">Nhà em không có món nào ư? Không sao, hãy mở tủ lạnh phép thuật của lớp học!</p>
+                  
+                  <div className="space-y-2 md:space-y-3 flex-1 flex flex-col justify-center">
+                    <button onClick={() => setShowFridge(true)} className="w-full py-1.5 md:py-2 bg-[#00E5FF] border-2 md:border-4 border-black rounded-xl shadow-[4px_4px_0px_0px_#000000] font-black text-base md:text-lg hover:translate-y-1 hover:shadow-[2px_2px_0px_0px_#000000] transition-all flex justify-center items-center gap-2">
+                      Mở Tủ Lạnh Phép Thuật ngay! 🧊
+                    </button>
+
+                    <div className="w-full p-1.5 md:p-2 border-2 md:border-4 border-dashed border-black rounded-xl font-bold text-sm md:text-base flex items-center justify-between bg-gray-50">
+                      {selectedFoodB ? (
+                         <span className="flex items-center gap-1 md:gap-2 text-lg md:text-xl">{selectedFoodB.emoji} Đã chọn: <span className="text-[#FF0000] uppercase font-black">{selectedFoodB.name}</span></span>
+                      ) : (
+                         <span className="text-gray-500 text-xs md:text-sm">Chưa chọn món nào từ Tủ Lạnh...</span>
+                      )}
+                      <button onClick={() => setShowFridge(true)} className="bg-black text-white px-2 py-1 md:px-3 md:py-1.5 rounded-lg font-black text-xs md:text-sm whitespace-nowrap ml-2"><Search className="w-3 h-3 md:w-4 md:h-4 inline" /> CHỌN LẠI</button>
+                    </div>
+                    <textarea value={reasonB} onChange={e => setReasonB(e.target.value)} placeholder="Vì sao em tò mò về món ăn này?" rows={3} className="w-full p-1.5 md:p-2 border-2 md:border-4 border-black rounded-xl font-bold text-sm md:text-base flex-1 min-h-[60px] md:min-h-[80px]" />
+                  </div>
+
+                      <button disabled={isSubmitting} onClick={() => handleSubmit('B')} className="mt-2 md:mt-3 w-full py-1.5 md:py-2 bg-black text-white font-black text-base md:text-lg rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800">
+                        {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-4 h-4 md:w-5 md:h-5" /> NỘP BÀI</>}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <div className="max-w-7xl mx-auto h-[calc(100vh-40px)] md:h-[calc(100vh-100px)] flex flex-col min-h-0 relative px-2 md:px-0">
@@ -304,7 +336,7 @@ export default function TruocLopPage() {
                 {/* Họa tiết lưới chấm bi chìm kiểu giấy note khổng lồ */}
                 <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#000000_2px,transparent_2px)] [background-size:24px_24px]"></div>
                 
-                <h2 className="text-lg md:text-2xl font-black uppercase mb-1 md:mb-2 text-[#FF00FF] flex items-center gap-2 relative z-10 shrink-0">📌 BẢNG TIN PADLET LỚP HỌC ({diaries.length})</h2>
+                <h2 className="text-lg md:text-2xl font-black uppercase mb-1 md:mb-2 text-[#FF00FF] flex items-center gap-2 relative z-10 shrink-0">📌 KHU TRƯNG BÀY NHẬT KÝ KHÁM PHÁ ({diaries.length})</h2>
                 <div className="p-2 md:p-3 bg-white border-2 border-black rounded-xl mb-2 relative z-10 shrink-0 shadow-inner">
                   <p className="font-bold text-xs md:text-base">📌 <span className="text-[#FF0000]">Câu hỏi thảo luận chung:</span> Sau khi xem Nhật ký của các bạn, em thấy các món lên men nhà các bạn có điểm gì giống và khác nhà em? Có gì thắc mắc không?</p>
                 </div>

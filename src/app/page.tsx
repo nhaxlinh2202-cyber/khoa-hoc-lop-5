@@ -95,17 +95,9 @@ export default function Gateway() {
     <div className="min-h-screen flex flex-col bg-[#FFFF00] font-sans text-black antialiased p-4 md:p-8 selection:bg-black selection:text-white">
       
       {/* ── Top Bar ── */}
-      <header className="shrink-0 bg-white px-6 py-4 rounded-[2rem] border-4 border-black shadow-[8px_8px_0px_0px_#000000] z-10 flex items-center justify-between mb-8">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 rounded-full bg-[#FF0000] border-2 border-black flex items-center justify-center animate-pulse">
-            <Sparkles className="w-6 h-6 text-[#FFFF00]" />
-          </div>
-          <span className="font-display font-black text-3xl tracking-tighter text-black uppercase">
-            KHOA HỌC LỚP 5
-          </span>
-        </div>
-        <span className="hidden sm:inline-block font-black text-lg px-6 py-2 rounded-full bg-[#00FF00] border-2 border-black text-black uppercase tracking-widest animate-bounce">
-          VUI LÀ CHÍNH! 🚀
+      <header className="shrink-0 bg-white px-6 py-4 rounded-[2rem] border-4 border-black shadow-[8px_8px_0px_0px_#000000] z-10 flex items-center justify-center mb-8 text-center">
+        <span className="font-display font-black text-xl md:text-3xl tracking-tighter text-black uppercase">
+          KHOA HỌC LỚP 5: VI KHUẨN CÓ LỢI TRONG CHẾ BIẾN THỰC PHẨM
         </span>
       </header>
 

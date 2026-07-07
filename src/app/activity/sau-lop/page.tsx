@@ -36,6 +36,10 @@ export default function SauLopPage() {
   const [isSubmittingReflection, setIsSubmittingReflection] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   
+  const [isTeacher, setIsTeacher] = useState(false);
+  const [allReflections, setAllReflections] = useState<any[]>([]);
+  const [showNotification, setShowNotification] = useState(false);
+  const [showClassDiary, setShowClassDiary] = useState(false);
   const [showWelcomePopup, setShowWelcomePopup] = useState(true);
 
   useEffect(() => {
@@ -68,13 +72,29 @@ export default function SauLopPage() {
 
   const fetchReflection = async () => {
     try {
-      const res = await fetch('/api/lesson-reflection');
-      if (res.ok) {
-        const data = await res.json();
-        setHasReflected(data.hasSubmitted);
-        if (data.reflection) {
-          setReflectionEmotion(data.reflection.emotion);
-          setReflectionContent(data.reflection.content);
+      const resMe = await fetch('/api/auth/me');
+      let isTeacherRole = false;
+      if (resMe.ok) {
+        const meData = await resMe.json();
+        isTeacherRole = meData.user?.role === 'teacher';
+        setIsTeacher(isTeacherRole);
+      }
+
+      if (isTeacherRole) {
+         const resAll = await fetch('/api/lesson-reflection?all=true', { cache: 'no-store' });
+         if (resAll.ok) {
+            const dataAll = await resAll.json();
+            setAllReflections(dataAll.reflections || []);
+         }
+      } else {
+        const res = await fetch('/api/lesson-reflection', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setHasReflected(data.hasSubmitted);
+          if (data.reflection) {
+            setReflectionEmotion(data.reflection.emotion);
+            setReflectionContent(data.reflection.content);
+          }
         }
       }
     } catch(err) {
@@ -224,8 +244,16 @@ export default function SauLopPage() {
       if (res.ok) {
         setHasReflected(true);
         setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 5000);
+        setShowNotification(true);
+        fetchReflection();
+        setTimeout(() => setShowConfetti(false), 3000);
+      } else {
+        const data = await res.json();
+        alert('Lỗi nộp nhật ký: ' + data.error);
       }
+    } catch(err: any) {
+      alert('Lỗi kết nối: ' + err.message);
+      console.error(err);
     } finally {
       setIsSubmittingReflection(false);
     }
@@ -236,6 +264,48 @@ export default function SauLopPage() {
   return (
     <div className="w-full h-screen bg-[#FFFF00] flex items-center justify-center p-2 sm:p-4 font-display overflow-hidden relative">
       {showConfetti && <div className="fixed inset-0 z-[9999] pointer-events-none"><Confetti width={typeof window !== 'undefined' ? window.innerWidth : 1000} height={typeof window !== 'undefined' ? window.innerHeight : 1000} /></div>}
+
+      {/* POPUP THÔNG BÁO ĐÃ NỘP NHẬT KÝ */}
+      {showNotification && (
+        <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+          <div className="bg-white border-4 md:border-8 border-black rounded-3xl p-6 md:p-8 flex flex-col items-center justify-center text-center shadow-[8px_8px_0px_0px_#00FF00] max-w-sm w-full animate-in zoom-in-50 duration-500">
+            <span className="text-6xl md:text-7xl mb-4 animate-bounce">🎉</span>
+            <h3 className="text-2xl md:text-3xl font-black uppercase text-black mb-3">ĐÃ NỘP!</h3>
+            <p className="font-bold text-gray-700 mb-6 text-base md:text-lg">Cảm ơn em đã chia sẻ cảm nghĩ về bài học hôm nay nhé! 🥰</p>
+            <button onClick={() => setShowNotification(false)} className="w-full bg-[#00FF00] text-black font-black text-xl uppercase border-4 border-black rounded-xl py-3 shadow-[4px_4px_0px_0px_#000000] hover:translate-y-1 hover:shadow-none active:translate-y-2 transition-all">ĐÓNG</button>
+          </div>
+        </div>
+      )}
+      
+      {/* MODAL CLASS DIARY */}
+      {showClassDiary && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white border-4 md:border-8 border-black rounded-3xl w-full max-w-4xl max-h-[80vh] flex flex-col shadow-[8px_8px_0px_0px_#FF00FF]">
+            <div className="bg-[#FF00FF] p-4 border-b-4 md:border-b-8 border-black flex justify-between items-center shrink-0">
+              <h2 className="text-white font-black text-xl md:text-2xl uppercase">NHẬT KÝ CỦA LỚP</h2>
+              <button onClick={() => setShowClassDiary(false)} className="w-8 h-8 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-110 font-black">X</button>
+            </div>
+            <div className="p-4 md:p-6 overflow-y-auto custom-scrollbar flex-1 bg-[#F5FBFF]">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {allReflections.map((ref: any) => (
+                  <div key={ref.id} className="bg-white border-4 border-black rounded-2xl p-4 shadow-[4px_4px_0px_0px_#000000] hover:-translate-y-1 transition-transform">
+                    <div className="flex items-center justify-between mb-3 border-b-2 border-black pb-2">
+                      <span className="font-black uppercase text-lg text-[#FF00FF]">{ref.studentName || 'Học sinh ẩn danh'}</span>
+                      <span className="text-3xl">
+                        {ref.emotion === 'tuyet-voi' ? '🤩' : ref.emotion === 'vui-ve' ? '😊' : ref.emotion === 'to-mo' ? '🤔' : ref.emotion === 'hoi-met' ? '😴' : '🙂'}
+                      </span>
+                    </div>
+                    <p className="font-bold text-gray-800 text-sm italic">"{ref.content}"</p>
+                  </div>
+                ))}
+                {allReflections.length === 0 && (
+                   <div className="col-span-full text-center font-black text-gray-500 py-8">CHƯA CÓ BÉ NÀO NỘP NHẬT KÝ!</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* POPUP CHÀO MỪNG */}
       {showWelcomePopup && (
@@ -296,7 +366,7 @@ export default function SauLopPage() {
             <button onClick={() => router.push('/home')} className="w-10 h-10 md:w-12 md:h-12 bg-white border-4 border-black rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-[4px_4px_0px_0px_#000000] shrink-0 hover:bg-pink-100 group">
               <ArrowLeft className="w-5 h-5 md:w-6 md:h-6 text-black group-hover:-translate-x-1 transition-transform" />
             </button>
-            <h1 className="text-xl md:text-3xl lg:text-4xl font-black uppercase text-[#FF00FF] truncate hidden sm:block drop-shadow-md">GIAI ĐOẠN 3: SAU LỚP 🏆</h1>
+            <h1 className="text-xl md:text-3xl lg:text-4xl font-black font-sans uppercase text-black truncate hidden sm:block">GIAI ĐOẠN 3: SAU LỚP</h1>
           </div>
           
           {/* TABS CHUYỂN HOẠT ĐỘNG */}
@@ -304,7 +374,7 @@ export default function SauLopPage() {
             {[
               { id: 1, color: 'bg-[#FF00FF]', icon: '🥣' },
               { id: 2, color: 'bg-[#FF8C00]', icon: '🎮' },
-              { id: 3, color: 'bg-[#00E5FF]', icon: '📖' }
+              { id: 3, color: 'bg-[#00E5FF]', icon: '🖊️' }
             ].map(act => (
               <button 
                 key={act.id}
@@ -317,7 +387,7 @@ export default function SauLopPage() {
           </div>
           
           <button onClick={() => router.push('/home')} className="px-4 py-2 md:px-6 md:py-3 bg-[#00FF00] border-4 border-black rounded-xl font-black text-sm md:text-base shadow-[4px_4px_0px_0px_#000000] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000] transition-all hidden lg:flex items-center gap-2 text-black shrink-0">
-            <Sparkles className="w-5 h-5 fill-white animate-pulse" /> HOÀN THÀNH
+            HOÀN THÀNH
           </button>
         </header>
 
@@ -360,10 +430,7 @@ export default function SauLopPage() {
                         DIỄN ĐÀN 👉
                       </button>
                     )}
-                    <div className="bg-white p-1 rounded-full border-2 border-black w-8 h-8 flex items-center justify-center shrink-0">
-                      <span className="text-[#FF00FF] font-black text-xs">♡</span>
-                    </div>
-                    <h2 className="text-xl md:text-2xl font-black uppercase text-white drop-shadow-md tracking-wider">SỔ TAY MA THUẬT 📝</h2>
+                    <h2 className="text-xl md:text-2xl font-black uppercase text-white drop-shadow-md tracking-wider">SỔ TAY MA THUẬT</h2>
                   </div>
                   
                   {/* FORM FIELDS */}
@@ -564,54 +631,73 @@ export default function SauLopPage() {
 
         {/* TAB 3: NHẬT KÝ & CẢM NHẬN */}
         {activeTab === 3 && (
-          <div className="max-w-4xl mx-auto min-h-full flex flex-col justify-center pb-4">
-             <section className="w-full relative shrink-0 flex-1 flex flex-col min-h-0">
-              <h2 className="text-xl md:text-2xl font-black uppercase mb-4 text-center text-[#00E5FF] drop-shadow-md flex justify-center items-center gap-2">
-                <Smile className="w-6 h-6 md:w-8 md:h-8 text-black" /> NHẬT KÝ BÀI HỌC
-              </h2>
+          <div className="max-w-5xl mx-auto h-full flex flex-col justify-center">
+             <section className="w-full relative shrink-0 flex-1 flex flex-col min-h-0 px-2 md:px-4 py-2">
               
-              <div className="space-y-4">
-                <div>
-                  <label className="font-black text-sm md:text-lg block mb-2 text-pink-600 bg-pink-100 p-2 rounded-xl border-2 md:border-4 border-black text-center shadow-[2px_2px_0px_0px_#000000]">
-                    1. HÔM NAY EM CẢM THẤY THẾ NÀO?
-                  </label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-                    {[
-                      { emoji: '🤩', text: 'Tuyệt vời', value: 'tuyet-voi', color: 'bg-[#FFFF00]' },
-                      { emoji: '😊', text: 'Vui vẻ', value: 'vui-ve', color: 'bg-[#00FF00]' },
-                      { emoji: '🤔', text: 'Tò mò', value: 'to-mo', color: 'bg-[#00E5FF]' },
-                      { emoji: '😴', text: 'Hơi mệt', value: 'hoi-met', color: 'bg-gray-300' }
-                    ].map(item => (
-                      <button 
-                        key={item.value}
-                        onClick={() => setReflectionEmotion(item.value)}
-                        className={`flex flex-col items-center justify-center p-2 md:p-3 border-2 md:border-4 border-black rounded-2xl shadow-[2px_2px_0px_0px_#000000] transition-all duration-300 group ${reflectionEmotion === item.value ? 'ring-2 md:ring-4 ring-black scale-105 ' + item.color + ' -translate-y-2 shadow-[4px_4px_0px_0px_#000000]' : 'bg-white hover:scale-105 hover:-translate-y-1'}`}
-                      >
-                        <span className="text-3xl md:text-4xl mb-1 group-hover:animate-bounce">{item.emoji}</span>
-                        <span className="font-black uppercase text-[10px] md:text-xs">{item.text}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
-                <div>
-                  <label className="font-black text-sm md:text-lg block mb-2 text-purple-600 bg-purple-100 p-2 rounded-xl border-2 md:border-4 border-black text-center shadow-[2px_2px_0px_0px_#000000]">
-                    2. EM ẤN TƯỢNG NHẤT ĐIỀU GÌ?
-                  </label>
-                  <textarea 
-                    value={reflectionContent}
-                    onChange={e => setReflectionContent(e.target.value)}
-                    placeholder="Hãy viết vài dòng chia sẻ suy nghĩ của em nhé... ✍️"
-                    className="w-full p-3 md:p-4 border-2 md:border-4 border-black rounded-2xl font-bold text-sm md:text-base min-h-[100px] md:min-h-[120px] shadow-[inset_0_2px_5px_rgba(0,0,0,0.1)] focus:outline-none focus:bg-[#FFFF00] transition-colors leading-relaxed"
-                  />
+
+              <div className="flex justify-between items-center mb-2 md:mb-3 relative shrink-0">
+                <h2 className="text-2xl md:text-3xl font-black uppercase text-black drop-shadow-sm flex items-center gap-3 w-full justify-center">
+                  NHẬT KÝ BÀI HỌC
+                </h2>
+                {isTeacher && (
+                  <button 
+                    onClick={() => { setShowClassDiary(true); fetchReflection(); }}
+                    className="absolute right-0 bg-[#FF00FF] text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl border-4 border-black font-black uppercase hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#000000] transition-all flex items-center gap-2"
+                  >
+                    👁️ XEM LỚP
+                  </button>
+                )}
+              </div>
+              
+              <div className="max-w-5xl mx-auto w-full flex flex-col gap-2 md:gap-4 flex-1 min-h-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 items-stretch flex-1 min-h-0">
+                  {/* BOX 1 */}
+                  <div className="bg-[#F5FBFF] border-4 border-black rounded-3xl p-3 md:p-4 relative shadow-[4px_4px_0px_0px_#00E5FF] h-full flex flex-col">
+                    <div className="absolute -top-4 -left-4 w-10 h-10 bg-[#FFFF00] rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-[2px_2px_0px_0px_#000000]">1</div>
+                    <label className="font-black text-base md:text-lg block mb-2 md:mb-3 text-black text-center uppercase shrink-0">
+                      HÔM NAY EM CẢM THẤY THẾ NÀO?
+                    </label>
+                    <div className="grid grid-cols-2 gap-2 md:gap-3 flex-1">
+                      {[
+                        { emoji: '🤩', text: 'Tuyệt vời', value: 'tuyet-voi', color: 'bg-[#FFFF00]' },
+                        { emoji: '😊', text: 'Vui vẻ', value: 'vui-ve', color: 'bg-[#00FF00]' },
+                        { emoji: '🤔', text: 'Tò mò', value: 'to-mo', color: 'bg-[#00E5FF]' },
+                        { emoji: '😴', text: 'Hơi mệt', value: 'hoi-met', color: 'bg-gray-300' }
+                      ].map(item => (
+                        <button 
+                          key={item.value}
+                          onClick={() => setReflectionEmotion(item.value)}
+                          className={`flex flex-col items-center justify-center w-full h-full py-1 md:py-2 px-2 border-4 border-black rounded-2xl transition-all duration-300 group ${reflectionEmotion === item.value ? 'ring-4 ring-black scale-105 ' + item.color + ' -translate-y-1 shadow-[4px_4px_0px_0px_#000000]' : 'bg-white hover:scale-105 shadow-[2px_2px_0px_0px_#000000] hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#000000]'}`}
+                        >
+                          <span className="text-3xl md:text-4xl mb-1 group-hover:animate-bounce">{item.emoji}</span>
+                          <span className="font-black uppercase text-[10px] md:text-xs">{item.text}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* BOX 2 */}
+                  <div className="bg-[#FFF0F5] border-4 border-black rounded-3xl p-3 md:p-4 relative shadow-[4px_4px_0px_0px_#FF00FF] h-full flex flex-col">
+                    <div className="absolute -top-4 -left-4 w-10 h-10 bg-[#00FF00] rounded-full border-4 border-black flex items-center justify-center font-black text-xl shadow-[2px_2px_0px_0px_#000000]">2</div>
+                    <label className="font-black text-base md:text-lg block mb-2 md:mb-3 text-black text-center uppercase shrink-0">
+                      EM ẤN TƯỢNG NHẤT ĐIỀU GÌ?
+                    </label>
+                    <textarea 
+                      value={reflectionContent}
+                      onChange={e => setReflectionContent(e.target.value)}
+                      placeholder="Hãy viết vài dòng chia sẻ suy nghĩ của em nhé... ✍️"
+                      className="w-full p-3 border-4 border-black rounded-2xl font-bold text-sm md:text-base flex-1 shadow-[inset_0_4px_8px_rgba(0,0,0,0.1)] focus:outline-none focus:bg-[#FFFF00] transition-colors leading-relaxed resize-none min-h-[80px]"
+                    />
+                  </div>
                 </div>
 
                 <button 
                   disabled={isSubmittingReflection} 
                   onClick={handleReflectionSubmit} 
-                  className="w-full py-3 bg-[#FF00FF] text-white border-2 md:border-4 border-black shadow-[4px_4px_0px_0px_#000000] font-black text-base md:text-xl uppercase rounded-2xl flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#000000] transition-all"
+                  className="w-full py-2.5 md:py-3 bg-black text-white border-4 border-black shadow-[6px_6px_0px_0px_#FF0000] font-black text-lg md:text-xl uppercase rounded-3xl flex items-center justify-center gap-2 hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_#FF0000] active:translate-y-1 active:shadow-[2px_2px_0px_0px_#FF0000] transition-all disabled:opacity-50 shrink-0 mt-2"
                 >
-                  {isSubmittingReflection ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-5 h-5 animate-pulse" /> {hasReflected ? 'CẬP NHẬT NHẬT KÝ' : 'GỬI NHẬT KÝ'}</>}
+                  {isSubmittingReflection ? <Loader2 className="w-6 h-6 md:w-8 md:h-8 animate-spin" /> : (hasReflected ? 'CẬP NHẬT NHẬT KÝ' : 'GỬI NHẬT KÝ')}
                 </button>
               </div>
             </section>
